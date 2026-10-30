@@ -1,0 +1,70 @@
+{
+ "slug": "santos-dumont-14bis",
+ "niche": "historia",
+ "title": "Quem realmente inventou o avião? A história que os livros contam pela metade",
+ "description": "O 14-Bis de Santos Dumont e o voo que mudou a aviação, em 1906.",
+ "tags": [
+  "curiosidades",
+  "historia",
+  "santosdumont",
+  "aviacao",
+  "brasil",
+  "shorts"
+ ],
+ "scenes": [
+  {
+   "text": "Quem inventou o avião?",
+   "image_query": "Alberto Santos-Dumont 14-bis",
+   "narration": "Quem inventou o avião? A resposta que você aprendeu na escola é só metade da história. E um brasileiro está no centro dela."
+  },
+  {
+   "text": "Paris, 1906",
+   "image_query": "Santos-Dumont Paris 1906",
+   "narration": "Alberto Santos Dumont nasceu em Minas Gerais e foi viver em Paris, onde construiu balões e dirigíveis."
+  },
+  {
+   "text": "23 de outubro de 1906",
+   "image_query": "14-bis Bagatelle 1906",
+   "narration": "Em vinte e três de outubro de mil novecentos e seis, diante de uma multidão, o 14-Bis levantou voo sozinho e percorreu cerca de sessenta metros. Foi o primeiro voo de avião visto em público na Europa."
+  },
+  {
+   "text": "Voo de 12 de novembro",
+   "kind": "counter",
+   "narration": "Semanas depois, em doze de novembro, ele voou duzentos e vinte metros, em pouco mais de vinte e um segundos. Esse voo foi homologado oficialmente.",
+   "data": {
+    "value": 220,
+    "prefix": "",
+    "suffix": " m",
+    "decimals": 0,
+    "label": "metros em 21 segundos"
+   }
+  },
+  {
+   "text": "E os irmãos Wright?",
+   "narration": "Mas os irmãos Wright não tinham voado antes, em mil novecentos e três? Tinham. E aqui fica interessante."
+  },
+  {
+   "text": "A diferença",
+   "image_query": "Wright Flyer 1903 Kitty Hawk",
+   "narration": "O avião dos Wright decolava de um trilho, com ajuda de vento, e quase sem testemunhas. O 14-Bis decolou sozinho, sobre rodas, diante de oficiais e da imprensa."
+  },
+  {
+   "text": "Sem patentes",
+   "image_query": "Santos-Dumont Demoiselle",
+   "narration": "Santos Dumont abriu mão de patentes e publicou os planos do Demoiselle, para qualquer pessoa poder construir."
+  },
+  {
+   "text": "O relógio de pulso",
+   "image_query": "Cartier Santos wristwatch",
+   "narration": "Conta a história que ele reclamava do relógio de bolso durante os voos, e o joalheiro Cartier criou um modelo de pulso para ele."
+  },
+  {
+   "text": "Quem inventou?",
+   "narration": "Então, quem inventou o avião? Depende do critério. Mas o primeiro voo público e homologado teve a assinatura de um brasileiro."
+  },
+  {
+   "text": "Comenta aqui",
+   "narration": "Você já conhecia essa história? Comenta e segue para mais curiosidades da história."
+  }
+ ]
+}

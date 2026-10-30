@@ -1,0 +1,69 @@
+{
+ "slug": "corte-portuguesa-fuga-brasil",
+ "niche": "historia",
+ "title": "O dia em que um país inteiro mudou de endereço: Portugal veio para o Brasil",
+ "description": "Em 1807, a corte portuguesa fugiu de Napoleão e transformou o Rio de Janeiro em capital do império.",
+ "tags": [
+  "curiosidades",
+  "historia",
+  "brasil",
+  "historiadobrasil",
+  "dompedro",
+  "shorts"
+ ],
+ "scenes": [
+  {
+   "text": "Portugal mudou para o Brasil",
+   "image_query": "Prince Regent John VI of Portugal",
+   "narration": "Em mil oitocentos e sete, um país europeu inteiro mudou de endereço. A capital de Portugal passou a ser o Rio de Janeiro."
+  },
+  {
+   "text": "Napoleão chega",
+   "image_query": "Napoleon Bonaparte portrait",
+   "narration": "Napoleão estava conquistando a Europa e invadiu Portugal. O príncipe regente, Dom João, sabia que não podia vencer, e a ideia dele foi simples: fugir."
+  },
+  {
+   "text": "A fuga",
+   "image_query": "Lisbon harbour 1807 departure royal court",
+   "narration": "Em fim de novembro, dezenas de navios deixaram Lisboa, escoltados pela marinha britânica. Entre dez e quinze mil pessoas embarcaram às pressas, junto com a família real."
+  },
+  {
+   "text": "Chegada ao Brasil",
+   "image_query": "Rio de Janeiro 1808 Debret",
+   "narration": "Eles chegaram à Bahia em janeiro de mil oitocentos e oito, e ao Rio de Janeiro em março. A colônia virou, na prática, o centro do império português."
+  },
+  {
+   "text": "Abertura dos portos",
+   "narration": "Ainda na Bahia, Dom João abriu os portos do Brasil às nações amigas. Até então, o comércio era restrito a Portugal."
+  },
+  {
+   "text": "O Rio muda",
+   "image_query": "Jardim Botânico Rio de Janeiro historic",
+   "narration": "Em poucos anos, o Rio ganhou o Banco do Brasil, a Imprensa Régia, o Jardim Botânico e uma biblioteca real. A cidade virou a única capital europeia fora da Europa."
+  },
+  {
+   "text": "A corte ficou",
+   "kind": "counter",
+   "narration": "Dom João e a corte ficaram treze anos no Brasil, de mil oitocentos e oito a mil oitocentos e vinte e um.",
+   "data": {
+    "value": 13,
+    "prefix": "",
+    "suffix": " anos",
+    "decimals": 0,
+    "label": "anos de corte no Rio"
+   }
+  },
+  {
+   "text": "Reino Unido",
+   "narration": "Em mil oitocentos e quinze, o Brasil deixou de ser colônia e virou parte do Reino Unido de Portugal, Brasil e Algarves."
+  },
+  {
+   "text": "O que veio depois",
+   "narration": "Quando Dom João voltou, deixou o filho Pedro aqui. Pouco mais de um ano depois, Pedro proclamou a independência."
+  },
+  {
+   "text": "Comenta aqui",
+   "narration": "Quer ver mais sobre a história do Brasil? Comenta e segue para mais curiosidades."
+  }
+ ]
+}

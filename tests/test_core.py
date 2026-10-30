@@ -59,6 +59,17 @@ class Core(unittest.TestCase):
         self.assertFalse(pt("O Truque", "en"))
         self.assertFalse(pt("#shorts #viral"))
 
+    def test_all_example_scripts_are_valid(self):
+        import pathlib
+        files = sorted(pathlib.Path("scripts/examples").glob("*.json"))
+        self.assertGreaterEqual(len(files), 9)
+        for f in files:
+            sc = script.load(f)
+            words = len(sc.narration.split())
+            self.assertTrue(180 <= words <= 320, f"{f.name}: {words} palavras")
+            self.assertTrue(any(s.kind for s in sc.scenes), f"{f.name}: sem cena animada")
+            self.assertTrue(any(s.image_query for s in sc.scenes) or sc.niche != "historia", f.name)
+
     def test_fmt_ptbr(self):
         self.assertEqual(animate.fmt(115019, "R$ "), "R$ 115.019")
         self.assertEqual(animate.fmt(1234.5, decimals=1, suffix="%"), "1.234,5%")

@@ -1,0 +1,90 @@
+{
+ "slug": "zanzibar-guerra-curta",
+ "niche": "historia",
+ "title": "A guerra mais curta da história durou menos que um episódio de série",
+ "description": "Em 1896, a guerra anglo-zanzibarina durou cerca de 38 minutos.",
+ "tags": [
+  "curiosidades",
+  "historia",
+  "guerra",
+  "zanzibar",
+  "imperioBritanico",
+  "shorts"
+ ],
+ "scenes": [
+  {
+   "text": "A guerra de 40 minutos",
+   "image_query": "HMS Glasgow 1896 Zanzibar",
+   "narration": "A guerra mais curta da história durou menos tempo que um episódio de série. Ela aconteceu em Zanzibar, em mil oitocentos e noventa e seis."
+  },
+  {
+   "text": "Zanzibar, 1896",
+   "image_query": "Zanzibar Stone Town historic",
+   "narration": "Zanzibar era um sultanato na costa da África, sob forte influência britânica. Os ingleses tinham um acordo: nenhum sultão assumia sem a aprovação deles."
+  },
+  {
+   "text": "A morte do sultão",
+   "narration": "Em vinte e cinco de agosto, o sultão morreu. Seu primo Khalid tomou o palácio na hora, sem pedir autorização a ninguém."
+  },
+  {
+   "text": "Ultimato",
+   "narration": "Os britânicos queriam outro sultão, mais amigável aos interesses deles. Então deram um ultimato: Khalid devia deixar o palácio até as nove da manhã do dia seguinte."
+  },
+  {
+   "text": "O palácio",
+   "image_query": "Beit al-Hukm Zanzibar palace",
+   "narration": "Khalid não saiu. Ele reuniu cerca de dois mil e oitocentos homens no palácio e se recusou a obedecer."
+  },
+  {
+   "text": "09:00",
+   "kind": "counter",
+   "narration": "Às nove em ponto, o prazo terminou. Dois minutos depois, cruzadores britânicos abriram fogo contra o palácio.",
+   "data": {
+    "value": 9,
+    "prefix": "",
+    "suffix": ":00",
+    "decimals": 0,
+    "label": "hora do ultimato"
+   }
+  },
+  {
+   "text": "Fim da guerra",
+   "kind": "counter",
+   "narration": "Em cerca de trinta e oito minutos, o palácio estava em ruínas, e Khalid tinha fugido para o consulado alemão.",
+   "data": {
+    "value": 38,
+    "prefix": "",
+    "suffix": " min",
+    "decimals": 0,
+    "label": "minutos de guerra"
+   }
+  },
+  {
+   "text": "Ironia",
+   "narration": "Há uma ironia: o navio do próprio sultão, também chamado Glasgow, como um dos cruzadores britânicos, foi afundado na batalha."
+  },
+  {
+   "text": "Baixas",
+   "kind": "bars",
+   "narration": "Do lado de Zanzibar, cerca de quinhentas pessoas morreram. Do lado britânico, um único marinheiro ficou ferido.",
+   "data": {
+    "items": [
+     {
+      "label": "Zanzibar (cerca de)",
+      "value": 500
+     },
+     {
+      "label": "Reino Unido",
+      "value": 1
+     }
+    ],
+    "suffix": "",
+    "prefix": ""
+   }
+  },
+  {
+   "text": "Comenta aqui",
+   "narration": "Qual guerra curiosa você quer ver aqui? Comenta e segue para mais história."
+  }
+ ]
+}

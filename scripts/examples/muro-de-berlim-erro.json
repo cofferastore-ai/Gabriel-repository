@@ -1,0 +1,70 @@
+{
+ "slug": "muro-de-berlim-erro",
+ "niche": "historia",
+ "title": "O erro de uma coletiva de imprensa que derrubou o Muro de Berlim",
+ "description": "Como uma frase mal compreendida levou milhares de alemães orientais à fronteira em 9 de novembro de 1989.",
+ "tags": [
+  "curiosidades",
+  "historia",
+  "muroberlim",
+  "guerrafria",
+  "alemanha",
+  "shorts"
+ ],
+ "scenes": [
+  {
+   "text": "Um erro derrubou o muro",
+   "image_query": "Berlin Wall fall 1989",
+   "narration": "O Muro de Berlim caiu por causa de um erro em uma coletiva de imprensa. E isso aconteceu no meio de uma noite de novembro."
+  },
+  {
+   "text": "Dividida ao meio",
+   "image_query": "Berlin Wall 1961 construction",
+   "narration": "Em mil novecentos e sessenta e um, a Alemanha Oriental ergueu um muro para impedir que as pessoas fugissem para o lado ocidental. Em volta da cidade, eram cerca de cento e cinquenta e cinco quilômetros."
+  },
+  {
+   "text": "Anos de muro",
+   "kind": "counter",
+   "narration": "Durante vinte e oito anos, famílias ficaram separadas, e muitas pessoas morreram tentando atravessar.",
+   "data": {
+    "value": 28,
+    "prefix": "",
+    "suffix": " anos",
+    "decimals": 0,
+    "label": "anos dividida"
+   }
+  },
+  {
+   "text": "1989",
+   "image_query": "East Germany protests 1989 Leipzig",
+   "narration": "Em mil novecentos e oitenta e nove, protestos cresciam por todo o país, e o governo decidiu relaxar as regras de viagem."
+  },
+  {
+   "text": "A coletiva",
+   "image_query": "Günter Schabowski press conference 9 November 1989",
+   "narration": "Na noite de nove de novembro, o porta-voz Günter Schabowski leu as novas regras, que ele mal tinha visto. Um jornalista perguntou: quando isso começa? Ele respondeu: imediatamente."
+  },
+  {
+   "text": "Não era para ser imediato",
+   "narration": "Mas o plano era que as regras valessem só no dia seguinte, com burocracia. A resposta dele foi um erro."
+  },
+  {
+   "text": "Multidões",
+   "image_query": "Bornholmer Straße border crossing 1989",
+   "narration": "A notícia foi para a televisão, e milhares de alemães orientais correram para as fronteiras. Na passagem da Bornholmer Straße, o comandante viu a multidão crescer."
+  },
+  {
+   "text": "Abram os portões",
+   "narration": "Sem ordens claras e com medo de um confronto, ele tomou uma decisão. Por volta das onze e meia da noite, mandou abrir a passagem."
+  },
+  {
+   "text": "A festa",
+   "image_query": "Brandenburg Gate November 1989 crowd on the wall",
+   "narration": "Em poucas horas, milhares de pessoas atravessaram, e muitas subiram no muro. A divisão de décadas acabou em uma noite."
+  },
+  {
+   "text": "Comenta aqui",
+   "narration": "Você sabia que foi um erro de fala? Comenta e segue para mais curiosidades da história."
+  }
+ ]
+}
