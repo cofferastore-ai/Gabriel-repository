@@ -49,6 +49,16 @@ class Core(unittest.TestCase):
         self.assertRegex(ass, r"Dialogue: 0,0:00:00\.00,[^,]+,Cap,,0,0,0,,\{\\fs\d+\}")
         self.assertNotRegex(ass.split("[Events]")[1].split("\n")[2], r"\\fs\d+\}.*ok")  # chunk só da palavra longa
 
+    def test_language_filter(self):
+        pt = research.is_portuguese
+        self.assertTrue(pt("O Truque Matemático Que Mudou Tudo...🧠#curiosidades"))
+        self.assertTrue(pt("Você sobreviveria ao primeiro minuto da bomba de Hiroshima?"))
+        self.assertTrue(pt("qualquer coisa", "pt-BR"))
+        self.assertFalse(pt("El Sonido que Todos TEMEN en la Guerra"))
+        self.assertFalse(pt("Why There Are TWO Indias in the World"))
+        self.assertFalse(pt("O Truque", "en"))
+        self.assertFalse(pt("#shorts #viral"))
+
     def test_fmt_ptbr(self):
         self.assertEqual(animate.fmt(115019, "R$ "), "R$ 115.019")
         self.assertEqual(animate.fmt(1234.5, decimals=1, suffix="%"), "1.234,5%")

@@ -28,6 +28,24 @@ ao aos à às pelo pela até entre quando onde porque tudo todo toda seu sua seu
 shorts short viral fyp""".split())
 
 
+_PT = set("o a os as um uma uns que de do da dos das em no na nos nas com para por foi era são tem não nao você voce "
+          "isso esse essa mais mas ou tudo mudou seu sua pelo pela ao aos como quando porque história curiosidades "
+          "fatos dinheiro investir ganhar".split())
+_ES = set("el la los las del un una que de en con para por es fue qué que más cómo su sus se no lo al y dinero "
+          "guerra historia".split()) - {"un", "no", "se", "que", "de", "con", "para", "por", "em", "la", "historia"} | {
+    "el", "los", "las", "del", "qué", "más", "cómo", "es", "fue", "una", "dinero", "guerra", "sonido", "antigua"}
+_EN = set("the is why how to of and you this what with that was for in it on are your he his she they".split())
+
+
+def is_portuguese(title: str, audio_lang: str = "") -> bool:
+    """A API só 'prefere' o idioma; filtramos aqui. Idioma de áudio declarado manda; senão, heurística por palavras."""
+    if audio_lang:
+        return audio_lang.lower().startswith("pt")
+    toks = re.findall(r"[a-zà-ÿ]+", title.lower())
+    pt, es, en = (sum(t in vocab for t in toks) for vocab in (_PT, _ES, _EN))
+    return pt > 0 and pt > es and pt > en
+
+
 def parse_duration(iso: str) -> int:
     m = re.fullmatch(r"P(?:(\d+)D)?T?(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?", iso or "")
     if not m:
@@ -101,10 +119,13 @@ def collect(key: str, niche: str, days: int, max_seconds: int, now: datetime) ->
             secs = parse_duration(it["contentDetails"]["duration"])
             if not 5 <= secs <= max_seconds:
                 continue
+            lang = it["snippet"].get("defaultAudioLanguage") or it["snippet"].get("defaultLanguage") or ""
+            if not is_portuguese(it["snippet"]["title"], lang):
+                continue
             st = it.get("statistics", {})
             videos.append({
                 "id": it["id"], "title": it["snippet"]["title"], "channel_id": it["snippet"]["channelId"],
-                "channel": it["snippet"]["channelTitle"], "published": it["snippet"]["publishedAt"],
+                "channel": it["snippet"]["channelTitle"].replace("|", "/"), "published": it["snippet"]["publishedAt"],
                 "seconds": secs, "views": int(st.get("viewCount", 0)), "likes": int(st.get("likeCount", 0)),
                 "comments": int(st.get("commentCount", 0)), "query": ids[it["id"]], "niche": niche,
                 "url": f"https://www.youtube.com/shorts/{it['id']}",
