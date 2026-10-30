@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime, timezone
 
-from vvm import captions, research
+from vvm import animate, captions, images, research, script
 from vvm.tts import Word
 
 
@@ -33,6 +33,46 @@ class Core(unittest.TestCase):
         ass = captions.build_ass([(0.0, 2.0, [Word("oi", 0, 1), Word("mundo", 1, 2)])])
         self.assertIn(r"{\c&H00D7FF&}OI{\c&HFFFFFF&} MUNDO", ass)
         self.assertIn("0:00:01.00", ass)
+
+    def test_fmt_ptbr(self):
+        self.assertEqual(animate.fmt(115019, "R$ "), "R$ 115.019")
+        self.assertEqual(animate.fmt(1234.5, decimals=1, suffix="%"), "1.234,5%")
+
+    def test_growth_series_matches_formula(self):
+        total, invested = animate.growth_series(500, 0.01, 120)
+        self.assertAlmostEqual(total[-1], 500 * ((1.01 ** 120 - 1) / 0.01), places=4)
+        self.assertEqual(invested[-1], 60000)
+
+    def test_license_filter(self):
+        rank = images._license_rank
+        self.assertEqual(rank("Public domain"), 0)
+        self.assertEqual(rank("CC0"), 0)
+        self.assertEqual(rank("CC BY 4.0"), 1)
+        for bad in ("CC BY-SA 4.0", "CC BY-NC 2.0", "CC BY-ND 2.0", "GFDL", "Fair use", ""):
+            self.assertIsNone(rank(bad), bad)
+
+    def test_pick_prefers_public_domain_and_skips_bad(self):
+        def page(i, lic, w=2000, mime="image/jpeg"):
+            return {"title": f"File:{i}.jpg", "index": i, "imageinfo": [{
+                "thumburl": f"https://x/{i}.jpg", "mime": mime, "width": w,
+                "extmetadata": {"LicenseShortName": {"value": lic}, "Artist": {"value": "<b>Ana</b>"}}}]}
+        pages = {"1": page(1, "CC BY-SA 4.0"), "2": page(2, "CC BY 4.0"), "3": page(3, "Public domain"),
+                 "4": page(4, "Public domain", w=300), "5": page(5, "Public domain", mime="image/svg+xml")}
+        best = images.pick(pages)
+        self.assertEqual(best["url"], "https://x/3.jpg")
+        self.assertFalse(best["needs_credit"])
+        self.assertIsNone(images.pick({"1": page(1, "CC BY-NC 2.0")}))
+
+    def test_script_validation(self):
+        import json, tempfile, pathlib
+        d = pathlib.Path(tempfile.mkdtemp())
+        f = d / "x.json"
+        f.write_text(json.dumps({"title": "t", "scenes": [{"narration": "oi", "kind": "counter"}]}))
+        with self.assertRaises(ValueError):  # counter sem data
+            script.load(f)
+        f.write_text(json.dumps({"title": "t", "scenes": [{"narration": "oi", "kind": "voando"}]}))
+        with self.assertRaises(ValueError):  # kind inexistente
+            script.load(f)
 
 
 if __name__ == "__main__":

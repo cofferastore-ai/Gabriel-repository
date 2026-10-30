@@ -1,0 +1,33 @@
+{
+  "slug": "cleopatra-tempo",
+  "niche": "historia",
+  "title": "Cleópatra viveu mais perto da Lua do que das pirâmides",
+  "description": "3 fatos da história que quebram a sua noção de tempo.",
+  "tags": ["historia", "curiosidades", "egito", "cleopatra", "shorts"],
+  "scenes": [
+    {"text": "Cleópatra e a Lua", "image_query": "Cleopatra VII bust Altes Museum",
+     "narration": "Cleópatra viveu mais perto da chegada do homem à Lua do que da construção das pirâmides. Parece mentira, mas é só matemática."},
+    {"text": "Pirâmides de Gizé", "image_query": "Great Pyramid of Giza",
+     "narration": "A Grande Pirâmide de Gizé foi construída por volta de dois mil quinhentos e sessenta antes de Cristo, durante o reinado do faraó Quéops."},
+    {"text": "Cleópatra, 69 a.C.", "image_query": "Cleopatra VII Philopator",
+     "narration": "Cleópatra nasceu no ano sessenta e nove antes de Cristo. E ela nem era egípcia de origem: sua família era grega, descendente de um general de Alexandre, o Grande."},
+    {"text": "Quanto tempo passou?", "kind": "bars",
+     "data": {"items": [{"label": "Pirâmide até Cleópatra", "value": 2491, "suffix": " anos"}, {"label": "Cleópatra até a Lua", "value": 2037, "suffix": " anos"}]},
+     "narration": "Entre a pirâmide e Cleópatra, passaram cerca de dois mil quatrocentos e noventa anos. Entre Cleópatra e a Lua, em mil novecentos e sessenta e nove, pouco mais de dois mil."},
+    {"text": "Apollo 11, 1969", "image_query": "Apollo 11 Buzz Aldrin on the Moon",
+     "narration": "Ou seja, Cleópatra está mais próxima da missão Apollo onze do que de quem levantou a Grande Pirâmide."},
+    {"text": "Tem mais dois fatos", "narration": "Mas esse é só o primeiro fato. Os próximos dois são ainda mais difíceis de acreditar. Fica até o final."},
+    {"text": "Mamutes", "image_query": "Woolly mammoth",
+     "narration": "Fato dois. Quando a Grande Pirâmide estava sendo construída, ainda existiam mamutes-lanosos vivos no planeta."},
+    {"text": "Ilha de Wrangel", "image_query": "Wrangel Island Arctic",
+     "narration": "Uma pequena população sobreviveu na ilha de Wrangel, no Ártico russo, até cerca de quatro mil anos atrás. Os últimos mamutes conheceram a era dos faraós."},
+    {"text": "Universidade de Oxford", "image_query": "University of Oxford Radcliffe Camera",
+     "narration": "Fato três. A Universidade de Oxford, na Inglaterra, já tinha aulas por volta do ano mil e noventa e seis."},
+    {"text": "Tenochtitlan, 1325", "image_query": "Tenochtitlan Aztec capital",
+     "narration": "Já Tenochtitlan, a capital do Império Asteca, só foi fundada em mil trezentos e vinte e cinco."},
+    {"text": "Oxford ensinava há", "kind": "counter",
+     "data": {"value": 229, "suffix": " anos", "label": "antes de Tenochtitlan existir"},
+     "narration": "Ou seja, Oxford já ensinava havia mais de duzentos anos antes de a cidade asteca existir."},
+    {"text": "O tempo engana", "narration": "Nossa intuição sobre o tempo é péssima. Qual desses fatos te surpreendeu mais? Comenta aqui embaixo e segue o canal para mais curiosidades da história."}
+  ]
+}

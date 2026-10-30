@@ -33,6 +33,12 @@ def main(argv=None) -> int:
     v.add_argument("--provider", choices=["edge", "espeak"], default="edge")
     v.add_argument("--voice", default=tts.DEFAULT_VOICE)
     v.add_argument("--rate", default="+8%")
+    v.add_argument("--assets", type=Path, default=Path("assets"))
+    v.add_argument("--no-fetch", action="store_true", help="não buscar imagens na Commons")
+
+    i = sub.add_parser("images", help="pré-busca (e mostra) as imagens e créditos de um roteiro")
+    i.add_argument("script", type=Path)
+    i.add_argument("--assets", type=Path, default=Path("assets"))
 
     a = ap.parse_args(argv)
     if a.cmd == "research":
@@ -41,10 +47,19 @@ def main(argv=None) -> int:
             sys.exit("Defina YOUTUBE_API_KEY (veja .env.example).")
         paths = research.run(key, a.niche or sorted(research.NICHES), a.days, a.max_seconds, Path(a.out))
         print("Relatório:", paths["report"])
+    elif a.cmd == "images":
+        sc = script.load(a.script)
+        for n, s in enumerate(sc.scenes, 1):
+            if s.image or s.image_query:
+                path, credit = render.resolve_image(s, a.assets)
+                print(f"cena {n}: {'OK ' + str(path) if path else 'SEM IMAGEM'}  {credit}")
     else:
         sc = script.load(a.script)
-        res = render.build(sc, Path(a.out) / sc.slug, a.provider, a.voice, a.rate)
+        res = render.build(sc, Path(a.out) / sc.slug, a.provider, a.voice, a.rate, a.assets, not a.no_fetch)
         print(f"Vídeo: {res['video']}  ({res['duration']:.1f}s)\nLegenda/descrição: {res['meta']}")
+        if not res["in_target"]:
+            lo, hi = render.TARGET
+            print(f"AVISO: duração fora da meta de {lo}–{hi}s; ajuste a narração.")
     return 0
 
 
