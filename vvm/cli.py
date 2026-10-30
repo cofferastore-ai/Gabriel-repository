@@ -36,6 +36,12 @@ def main(argv=None) -> int:
     v.add_argument("--assets", type=Path, default=Path("assets"))
     v.add_argument("--no-fetch", action="store_true", help="não buscar imagens na Commons")
 
+    e = sub.add_parser("estimate", help="mede a duração só pela narração (rápido, sem renderizar)")
+    e.add_argument("script", type=Path)
+    e.add_argument("--provider", choices=["edge", "espeak"], default="edge")
+    e.add_argument("--voice", default=tts.DEFAULT_VOICE)
+    e.add_argument("--rate", default="+8%")
+
     i = sub.add_parser("images", help="pré-busca (e mostra) as imagens e créditos de um roteiro")
     i.add_argument("script", type=Path)
     i.add_argument("--assets", type=Path, default=Path("assets"))
@@ -47,6 +53,19 @@ def main(argv=None) -> int:
             sys.exit("Defina YOUTUBE_API_KEY (veja .env.example).")
         paths = research.run(key, a.niche or sorted(research.NICHES), a.days, a.max_seconds, Path(a.out))
         print("Relatório:", paths["report"])
+    elif a.cmd == "estimate":
+        import tempfile
+        sc = script.load(a.script)
+        total = 0.0
+        with tempfile.TemporaryDirectory() as tmp:
+            for n, s in enumerate(sc.scenes, 1):
+                f = Path(tmp) / f"{n}.{'mp3' if a.provider == 'edge' else 'wav'}"
+                tts.synthesize(s.narration, f, a.provider, a.voice, a.rate)
+                d = tts.audio_duration(f) + render.PAD
+                total += d
+                print(f"cena {n:2d}: {d:5.1f}s  {s.narration[:60]}")
+        lo, hi = render.TARGET
+        print(f"TOTAL: {total:.1f}s  (meta ~90s; janela {lo}-{hi}s)")
     elif a.cmd == "images":
         sc = script.load(a.script)
         for n, s in enumerate(sc.scenes, 1):
