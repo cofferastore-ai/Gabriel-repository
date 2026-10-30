@@ -1,0 +1,16 @@
+{
+  "slug": "juros-compostos",
+  "niche": "financas",
+  "title": "R$ 500 por mês viram mais de R$ 115 mil em 10 anos?",
+  "description": "Simulação ilustrativa de juros compostos: aporte de R$ 500 por mês a 1% ao mês durante 10 anos.",
+  "tags": ["financas", "investimentos", "jurosCompostos", "shorts"],
+  "disclaimer": "Simulação ilustrativa, sem garantia de rentabilidade. Não é recomendação de investimento.",
+  "scenes": [
+    {"text": "R$ 500 por mês", "narration": "Guardar quinhentos reais por mês parece pouco. Veja o que acontece com o tempo."},
+    {"text": "1% ao mês", "narration": "Imagine um rendimento de um por cento ao mês, durante dez anos."},
+    {"text": "R$ 60 mil", "narration": "Você coloca do próprio bolso sessenta mil reais ao longo dos cento e vinte meses."},
+    {"text": "R$ 115 mil", "narration": "Só que, com os juros compostos, o total chega a cerca de cento e quinze mil reais."},
+    {"text": "Tempo", "narration": "Quase metade desse valor veio dos juros, não do seu esforço. Esse é o poder do tempo."},
+    {"text": "Isso é uma simulação", "narration": "É só uma simulação, sem garantia de ganho. Salva esse vídeo e comenta quanto você guardaria por mês."}
+  ]
+}
