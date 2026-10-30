@@ -157,10 +157,15 @@ def _timeline(img, d, p, accent, t):
     ev = d["events"]
     n = len(ev)
     years = [e["year"] for e in ev]
-    pos = timeline_positions(years, CHART_TOP - 20, CHART_BOTTOM - 30, d.get("scale") == "even")
-    xl = 400
+    pos = timeline_positions(years, CHART_TOP - 50, CHART_BOTTOM - 80, d.get("scale") == "even")
+    xl = 380
     dr = ImageDraw.Draw(img)
-    yf, lf, gf = visuals.font(66), visuals.font(46), visuals.font(48)
+    yf, gf = visuals.font(66), visuals.font(48)
+    room = W - 50 - (xl + 52)  # largura disponível para o rótulo, à direita da linha
+    lf = visuals.font(46)
+    longest = max(ev, key=lambda e: len(e["label"]))["label"]
+    while lf.getlength(longest) > room and lf.size > 30:
+        lf = visuals.font(lf.size - 2)
     starts = [i / n * 0.85 for i in range(n)]
     for i in range(1, n):  # segmento da linha crescendo até o próximo evento
         m = ease((p - starts[i] + 0.12) / 0.2)

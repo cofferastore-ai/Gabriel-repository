@@ -124,7 +124,9 @@ def frames(scene: Scene, niche: str, dur: float, seed: str = "") -> Iterator[Ima
         h = w * H / W
         cx, cy = a[0] + (b[0] - a[0]) * pc, a[1] + (b[1] - a[1]) * pc
         l, tp = (cx - w / 2 - bx0) * ppu, (cy - h / 2 - by0) * ppu
-        img = base.resize((W, H), Image.BILINEAR, box=(l, tp, l + w * ppu, tp + h * ppu))
+        l, tp = max(0.0, l), max(0.0, tp)  # arredondamento pode dar -1e-13 na borda do mapa-base
+        box = (l, tp, min(l + w * ppu, base.width), min(tp + h * ppu, base.height))
+        img = base.resize((W, H), Image.BILINEAR, box=box)
         img.paste(black, mask=shade)
 
         def scr(lon, lat):

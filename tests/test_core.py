@@ -101,6 +101,23 @@ class Core(unittest.TestCase):
                     for (x1, _), (x2, _) in zip(ring, ring[1:]):
                         self.assertLess(abs(x2 - x1), 0.5, name)
 
+    def test_map_first_frame_on_base_edge(self):
+        from vvm import mapscene
+        from vvm.script import Scene
+        sc = Scene("x", "Borda", kind="map", data={"from": {"lon": -20, "lat": 28, "span": 90},
+                                                      "to": {"lon": -30, "lat": 10, "span": 70}})
+        gen = mapscene.frames(sc, "historia", 0.1)
+        self.assertEqual(next(gen).size, (1080, 1920))  # antes: ValueError "box offset can't be negative"
+
+    def test_timeline_labels_fit_screen(self):
+        from vvm.script import Scene
+        sc = Scene("x", "T", kind="timeline", data={"events": [
+            {"year": -2560, "label": "Grande Pirâmide de Gizé"}, {"year": 1969, "label": "Homem na Lua e muito mais texto"}]})
+        frame = list(animate.frames(sc, "historia", 3.0))[-1]
+        # nada de texto nos 30 px da borda direita (abaixo do título)
+        strip = frame.crop((1050, 800, 1080, 1300)).convert("L")
+        self.assertLess(max(strip.getdata()) - min(strip.getdata()), 60)
+
     def test_fmt_ptbr(self):
         self.assertEqual(animate.fmt(115019, "R$ "), "R$ 115.019")
         self.assertEqual(animate.fmt(1234.5, decimals=1, suffix="%"), "1.234,5%")
