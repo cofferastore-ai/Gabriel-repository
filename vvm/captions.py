@@ -1,8 +1,24 @@
 """Legendas estilo Shorts/TikTok: poucas palavras por vez, palavra ativa destacada (ASS)."""
+from . import visuals
 from .tts import Word
 
 WORDS_PER_CHUNK = 3
+MAX_CHUNK_PX = 900  # largura útil da legenda (tela de 1080 menos margens)
+FONT_SIZE = 84
 FONT = "DejaVu Sans"
+
+
+def chunk_words(words: list[Word]) -> list[list[Word]]:
+    """Agrupa até 3 palavras por tela, sem passar da largura útil (o ASS não quebra linha sozinho)."""
+    f = visuals.font(FONT_SIZE)
+    chunks, cur = [], []
+    for w in words:
+        trial = " ".join(x.text.upper() for x in cur + [w])
+        if cur and (len(cur) >= WORDS_PER_CHUNK or f.getlength(trial) * 1.08 > MAX_CHUNK_PX):
+            chunks.append(cur)
+            cur = []
+        cur.append(w)
+    return chunks + ([cur] if cur else [])
 
 
 def estimate_words(text: str, duration: float, lead: float = 0.05) -> list[Word]:
@@ -39,13 +55,13 @@ def build_ass(timeline: list[tuple[float, float, list[Word]]], size=(1080, 1920)
         "Format: Name,Fontname,Fontsize,PrimaryColour,SecondaryColour,OutlineColour,BackColour,Bold,Italic,"
         "Underline,StrikeOut,ScaleX,ScaleY,Spacing,Angle,BorderStyle,Outline,Shadow,Alignment,MarginL,MarginR,"
         "MarginV,Encoding\n"
-        f"Style: Cap,{FONT},84,&H00FFFFFF,&H00FFFFFF,&H00000000,&H80000000,1,0,0,0,100,100,0,0,1,7,2,2,60,60,520,1\n\n"
+        f"Style: Cap,{FONT},{FONT_SIZE},&H00FFFFFF,&H00FFFFFF,&H00000000,&H80000000,1,0,0,0,100,100,0,0,1,7,2,2,60,60,520,1\n\n"
         "[Events]\nFormat: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text\n"
     )
+    f = visuals.font(FONT_SIZE)
     lines = []
     for scene_start, scene_dur, words in timeline:
-        for c0 in range(0, len(words), WORDS_PER_CHUNK):
-            chunk = words[c0:c0 + WORDS_PER_CHUNK]
+        for chunk in chunk_words(words):
             for i, active in enumerate(chunk):
                 start = scene_start + active.start
                 nxt = chunk[i + 1].start if i + 1 < len(chunk) else active.end
@@ -55,5 +71,7 @@ def build_ass(timeline: list[tuple[float, float, list[Word]]], size=(1080, 1920)
                 for j, wd in enumerate(chunk):
                     txt = wd.text.upper().replace("{", "(").replace("}", ")")
                     parts.append(r"{\c&H00D7FF&}" + txt + r"{\c&HFFFFFF&}" if j == i else txt)
-                lines.append(f"Dialogue: 0,{_ts(start)},{_ts(end)},Cap,,0,0,0,,{' '.join(parts)}")
+                width = f.getlength(" ".join(x.text.upper() for x in chunk))
+                shrink = rf"{{\fs{int(FONT_SIZE * MAX_CHUNK_PX / width)}}}" if width > MAX_CHUNK_PX else ""
+                lines.append(f"Dialogue: 0,{_ts(start)},{_ts(end)},Cap,,0,0,0,,{shrink}{' '.join(parts)}")
     return header + "\n".join(lines) + "\n"

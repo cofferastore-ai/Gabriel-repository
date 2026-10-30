@@ -34,6 +34,21 @@ class Core(unittest.TestCase):
         self.assertIn(r"{\c&H00D7FF&}OI{\c&HFFFFFF&} MUNDO", ass)
         self.assertIn("0:00:01.00", ass)
 
+    def test_caption_chunks_fit_screen(self):
+        from vvm import visuals
+        words = [Word(w, i, i + 1) for i, w in enumerate("ANOS QUASE QUINHENTOS reais, muito grande hoje".split())]
+        f = visuals.font(captions.FONT_SIZE)
+        chunks = captions.chunk_words(words)
+        self.assertEqual([w for c in chunks for w in c], words)
+        for c in chunks:
+            self.assertLessEqual(len(c), 3)
+            self.assertLess(f.getlength(" ".join(w.text.upper() for w in c)), 1000, c)
+
+    def test_single_long_word_is_shrunk(self):
+        ass = captions.build_ass([(0.0, 2.0, [Word("extraordinariamente", 0, 1), Word("ok", 1, 2)])])
+        self.assertRegex(ass, r"Dialogue: 0,0:00:00\.00,[^,]+,Cap,,0,0,0,,\{\\fs\d+\}")
+        self.assertNotRegex(ass.split("[Events]")[1].split("\n")[2], r"\\fs\d+\}.*ok")  # chunk só da palavra longa
+
     def test_fmt_ptbr(self):
         self.assertEqual(animate.fmt(115019, "R$ "), "R$ 115.019")
         self.assertEqual(animate.fmt(1234.5, decimals=1, suffix="%"), "1.234,5%")
