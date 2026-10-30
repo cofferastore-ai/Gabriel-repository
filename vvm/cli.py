@@ -30,23 +30,25 @@ def main(argv=None) -> int:
     v = sub.add_parser("render", help="gera o vídeo a partir de um roteiro JSON")
     v.add_argument("script", type=Path)
     v.add_argument("--out", default="output")
-    v.add_argument("--provider", choices=["edge", "espeak"], default="edge")
+    v.add_argument("--provider", choices=["piper", "edge", "espeak"], default="piper")
     v.add_argument("--voice", default=tts.DEFAULT_VOICE)
-    v.add_argument("--rate", default="+8%")
+    v.add_argument("--rate", default=None, help="ex.: +8%% (padrão: edge +8%%, piper +0%%)")
     v.add_argument("--assets", type=Path, default=Path("assets"))
     v.add_argument("--no-fetch", action="store_true", help="não buscar imagens na Commons")
 
     e = sub.add_parser("estimate", help="mede a duração só pela narração (rápido, sem renderizar)")
     e.add_argument("script", type=Path)
-    e.add_argument("--provider", choices=["edge", "espeak"], default="edge")
+    e.add_argument("--provider", choices=["piper", "edge", "espeak"], default="piper")
     e.add_argument("--voice", default=tts.DEFAULT_VOICE)
-    e.add_argument("--rate", default="+8%")
+    e.add_argument("--rate", default=None)
 
     i = sub.add_parser("images", help="pré-busca (e mostra) as imagens e créditos de um roteiro")
     i.add_argument("script", type=Path)
     i.add_argument("--assets", type=Path, default=Path("assets"))
 
     a = ap.parse_args(argv)
+    if getattr(a, "rate", 1) is None:
+        a.rate = "+8%" if a.provider == "edge" else "+0%"
     if a.cmd == "research":
         key = os.environ.get("YOUTUBE_API_KEY")
         if not key:

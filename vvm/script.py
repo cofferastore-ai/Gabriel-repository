@@ -5,6 +5,9 @@ Tipos de cena (`kind`), todos com `narration` e `text` (título curto na tela):
   counter   número que sobe: data = {value, prefix, suffix, decimals, label}
   bars      barras que crescem: data = {items: [{label, value}], prefix, suffix}
   growth    gráfico de juros compostos: data = {monthly, rate, months, prefix}
+  timeline  linha do tempo proporcional: data = {events: [{year, label}], scale: proportional|even, gaps}
+  list      itens que entram um a um: data = {items: [texto, ...]}
+  map       mapa animado com zoom, rotas e marcadores: veja vvm/mapscene.py
 """
 import json
 from dataclasses import dataclass, field
@@ -15,7 +18,7 @@ THEMES = {
     "financas": ((6, 24, 20), (14, 92, 70), (120, 255, 190)),
     "default": ((12, 14, 28), (40, 52, 110), (255, 215, 0)),
 }
-ANIMATED = {"counter", "bars", "growth"}
+ANIMATED = {"counter", "bars", "growth", "timeline", "map", "list"}
 
 
 @dataclass

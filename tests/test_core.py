@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime, timezone
 
-from vvm import animate, captions, images, research, script
+from vvm import animate, captions, geo, images, research, script
 from vvm.tts import Word
 
 
@@ -69,6 +69,37 @@ class Core(unittest.TestCase):
             self.assertTrue(180 <= words <= 320, f"{f.name}: {words} palavras")
             self.assertTrue(any(s.kind for s in sc.scenes), f"{f.name}: sem cena animada")
             self.assertTrue(any(s.image_query for s in sc.scenes) or sc.niche != "historia", f.name)
+
+    def test_year_gap_has_no_year_zero(self):
+        self.assertEqual(animate.year_gap(-69, 1969), 2037)
+        self.assertEqual(animate.year_gap(-2560, -69), 2491)
+        self.assertEqual(animate.year_gap(1096, 1325), 229)
+
+    def test_timeline_positions(self):
+        pos = animate.timeline_positions([-2560, -69, 1969], 800, 1200)
+        self.assertEqual((pos[0], pos[-1]), (800, 1200))
+        self.assertTrue(all(b - a >= animate.MIN_GAP - 1e-6 for a, b in zip(pos, pos[1:])))
+        # eventos colados são afastados e tudo continua dentro da área
+        close = animate.timeline_positions([1800, 1801, 1802, 1900], 800, 1200)
+        self.assertLessEqual(close[-1], 1200 + 1e-6)
+        self.assertEqual(close, sorted(close))
+
+    def test_mercator_and_countries(self):
+        x, y = geo.mercator(0, 0)
+        self.assertAlmostEqual(x, 0.5)
+        self.assertAlmostEqual(y, 0.5)
+        self.assertLess(geo.mercator(0, 60)[1], geo.mercator(0, 10)[1])  # norte fica no topo (y menor)
+        c = geo.countries()
+        for name in ("Brazil", "Portugal", "Russia", "Fiji"):
+            self.assertIn(name, c)
+        self.assertNotIn("Antarctica", c)
+
+    def test_no_ring_jumps_across_dateline(self):
+        for name, polys in geo.countries().items():
+            for poly in polys:
+                for ring in poly:
+                    for (x1, _), (x2, _) in zip(ring, ring[1:]):
+                        self.assertLess(abs(x2 - x1), 0.5, name)
 
     def test_fmt_ptbr(self):
         self.assertEqual(animate.fmt(115019, "R$ "), "R$ 115.019")

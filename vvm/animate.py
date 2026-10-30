@@ -126,7 +126,90 @@ def _growth(img, d, p, accent, t):
     dr.text((x1 - sf.getlength(end), y1 + 14), end, font=sf, fill=(220, 220, 220))
 
 
-KINDS = {"counter": _counter, "bars": _bars, "growth": _growth}
+MIN_GAP = 124  # distância mínima entre eventos da linha do tempo (px)
+
+
+def _year(y: int) -> str:
+    return f"{abs(int(y))} a.C." if y < 0 else f"{int(y)}"
+
+
+def year_gap(a: int, b: int) -> int:
+    """Anos entre dois anos do calendário (não existe ano zero: de 69 a.C. a 1969 são 2037 anos)."""
+    return abs(b - a) - (1 if (a < 0) != (b < 0) else 0)
+
+
+def timeline_positions(years: list[int], top: float, bottom: float, even: bool = False) -> list[float]:
+    """Posição vertical de cada evento: proporcional ao tempo real (ou uniforme), com espaçamento mínimo."""
+    n = len(years)
+    lo, hi = min(years), max(years)
+    if even or hi == lo or n == 1:
+        pos = [top + (bottom - top) * i / max(n - 1, 1) for i in range(n)]
+    else:
+        pos = [top + (bottom - top) * (y - lo) / (hi - lo) for y in years]
+    for i in range(1, n):
+        pos[i] = max(pos[i], pos[i - 1] + MIN_GAP)
+    if pos[-1] > bottom:  # estourou a área: comprime mantendo a ordem
+        pos = [top + (p - top) * (bottom - top) / (pos[-1] - top) for p in pos]
+    return pos
+
+
+def _timeline(img, d, p, accent, t):
+    ev = d["events"]
+    n = len(ev)
+    years = [e["year"] for e in ev]
+    pos = timeline_positions(years, CHART_TOP - 20, CHART_BOTTOM - 30, d.get("scale") == "even")
+    xl = 400
+    dr = ImageDraw.Draw(img)
+    yf, lf, gf = visuals.font(66), visuals.font(46), visuals.font(48)
+    starts = [i / n * 0.85 for i in range(n)]
+    for i in range(1, n):  # segmento da linha crescendo até o próximo evento
+        m = ease((p - starts[i] + 0.12) / 0.2)
+        if m > 0:
+            y2 = pos[i - 1] + (pos[i] - pos[i - 1]) * m
+            dr.line([(xl, pos[i - 1]), (xl, y2)], fill=accent, width=8)
+    for i, e in enumerate(ev):
+        q = ease((p - starts[i]) / 0.15)
+        if q <= 0:
+            continue
+        y = pos[i]
+        r = 20 * q
+        dr.ellipse([xl - r, y - r, xl + r, y + r], fill=(255, 255, 255), outline=accent, width=7)
+        off = (1 - q) * 40
+        dr.text((xl + 52 + off, y - 44), _year(e["year"]), font=yf, fill=accent, stroke_width=3, stroke_fill=(0, 0, 0))
+        dr.text((xl + 52 + off, y + 28), e["label"], font=lf, fill=(255, 255, 255), stroke_width=3, stroke_fill=(0, 0, 0))
+        if d.get("gaps", True) and i > 0:
+            g = ease((p - starts[i] - 0.08) / 0.2)
+            if g > 0:
+                val = year_gap(years[i - 1], years[i]) * g
+                txt = fmt(val, suffix=" anos")
+                mid = (pos[i - 1] + pos[i]) / 2
+                dr.line([(xl - 34, pos[i - 1] + 26), (xl - 34, pos[i] - 26)], fill=accent, width=4)
+                dr.text((xl - 54 - gf.getlength(txt), mid - 23), txt, font=gf, fill=accent, stroke_width=3, stroke_fill=(0, 0, 0))
+
+
+def _list(img, d, p, accent, t):
+    """Itens que entram um a um, cada um com marcador de 'check' (até 5 itens)."""
+    items = d["items"][:5]
+    n = len(items)
+    f = visuals.font(54)
+    layer = Image.new("RGBA", (W, CHART_BOTTOM - CHART_TOP + 80), (0, 0, 0, 0))
+    ld = ImageDraw.Draw(layer)
+    step = min(112, (CHART_BOTTOM - CHART_TOP + 40) // max(n, 1))
+    for i, text in enumerate(items):
+        q = ease((p - i / n * 0.8) / 0.18)
+        if q <= 0:
+            continue
+        y = 10 + i * step
+        x = visuals.MARGIN + (1 - q) * 120
+        ld.rounded_rectangle([x, y, W - visuals.MARGIN, y + step - 18], 22, fill=(0, 0, 0, int(120 * q)))
+        cx, cy, r = x + 46, y + (step - 18) / 2, 24 * q
+        ld.ellipse([cx - r, cy - r, cx + r, cy + r], fill=accent + (255,))
+        ld.line([(cx - 11, cy + 1), (cx - 3, cy + 10), (cx + 12, cy - 9)], fill=(10, 10, 10, int(255 * q)), width=6, joint="curve")
+        ld.text((x + 92, cy - 34), text, font=f, fill=(255, 255, 255, int(255 * q)), stroke_width=2, stroke_fill=(0, 0, 0, int(255 * q)))
+    img.paste(layer, (0, CHART_TOP - 30), layer)
+
+
+KINDS = {"counter": _counter, "bars": _bars, "growth": _growth, "timeline": _timeline, "list": _list}
 
 
 def frames(scene: Scene, niche: str, dur: float, seed: str = "") -> Iterator[Image.Image]:

@@ -3,7 +3,7 @@ import hashlib
 import subprocess
 from pathlib import Path
 
-from . import animate, captions, images, tts, visuals
+from . import animate, captions, images, mapscene, sound, tts, visuals
 from .script import ANIMATED, Scene, Script
 
 FPS = 30
@@ -46,7 +46,8 @@ def _anim_clip(scene: Scene, niche: str, audio: Path, dur: float, seed: str, out
            "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k", str(out)]
     p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
     try:
-        for frame in animate.frames(scene, niche, dur, seed):
+        gen = mapscene.frames if scene.kind == "map" else animate.frames
+        for frame in gen(scene, niche, dur, seed):
             p.stdin.write(frame.tobytes())
         p.stdin.close()
     except BrokenPipeError:
@@ -75,7 +76,7 @@ def resolve_image(sc: Scene, assets: Path, fetch: bool = True) -> tuple[Path | N
     return None, ""
 
 
-def build(script: Script, out_dir: Path, provider: str = "edge", voice: str = tts.DEFAULT_VOICE,
+def build(script: Script, out_dir: Path, provider: str = "piper", voice: str = tts.DEFAULT_VOICE,
           rate: str = "+8%", assets: Path = Path("assets"), fetch_images: bool = True) -> dict:
     work = out_dir / "work"
     work.mkdir(parents=True, exist_ok=True)
@@ -112,15 +113,25 @@ def build(script: Script, out_dir: Path, provider: str = "edge", voice: str = tt
 
     final = out_dir / f"{script.slug}.mp4"
     music = _pick_music(assets / "music", script.slug)
-    cmd = ["ffmpeg", "-y", "-loglevel", "error", "-i", str(joined.resolve())]
-    if music:
-        cmd += ["-stream_loop", "-1", "-i", str(music.resolve()), "-filter_complex",
-                f"[0:v]ass={ass.name}[v];[1:a]volume=0.08[m];[0:a][m]amix=inputs=2:duration=first:normalize=0[a]",
-                "-map", "[v]", "-map", "[a]"]
-    else:
-        cmd += ["-vf", f"ass={ass.name}"]
-    cmd += ["-c:v", "libx264", "-preset", "medium", "-crf", "20", "-c:a", "aac", "-b:a", "160k",
-            "-movflags", "+faststart", "-shortest", str(final.resolve())]
+    if not music:  # sem trilha sua em assets/music: usa o pad ambiente sintetizado
+        music = sound.ambient(script.niche, t0 + 1, work / "ambient.wav")
+    whoosh = sound.whoosh(work / "whoosh.wav")
+    starts = [int(tl[0] * 1000) for tl in timeline[1:]]  # um efeito a cada corte de cena
+    fc = [f"[0:v]ass={ass.name},vignette=PI/6[v]", "[0:a]asplit=2[vo1][vo2]",
+          "[1:a]volume=0.55[mu]", "[mu][vo1]sidechaincompress=threshold=0.02:ratio=9:attack=15:release=400[duck]"]
+    mix = ["[vo2]", "[duck]"]
+    if starts:
+        fc.append(f"[2:a]asplit={len(starts)}" + "".join(f"[w{i}]" for i in range(len(starts))))
+        for i, ms in enumerate(starts):
+            fc.append(f"[w{i}]volume=0.5,adelay={ms}|{ms}[x{i}]")
+        fc.append("".join(f"[x{i}]" for i in range(len(starts))) + f"amix=inputs={len(starts)}:normalize=0[sfx]")
+        mix.append("[sfx]")
+    fc.append("".join(mix) + f"amix=inputs={len(mix)}:duration=first:normalize=0,"
+              "loudnorm=I=-14:TP=-1.5:LRA=11[a]")
+    cmd = ["ffmpeg", "-y", "-loglevel", "error", "-i", str(joined.resolve()), "-stream_loop", "-1",
+           "-i", str(music.resolve()), "-i", str(whoosh.resolve()), "-filter_complex", ";".join(fc),
+           "-map", "[v]", "-map", "[a]", "-c:v", "libx264", "-preset", "medium", "-crf", "20",
+           "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", "-shortest", str(final.resolve())]
     _run(cmd, cwd=work)
 
     meta = out_dir / f"{script.slug}.txt"
