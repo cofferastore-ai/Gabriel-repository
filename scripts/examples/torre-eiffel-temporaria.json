@@ -1,0 +1,76 @@
+{
+ "slug": "torre-eiffel-temporaria",
+ "niche": "historia",
+ "title": "A Torre Eiffel deveria ter sido destruída. Por que ela ainda está de pé?",
+ "description": "A Torre Eiffel foi feita para durar 20 anos. Veja como ela foi salva.",
+ "tags": [
+  "curiosidades",
+  "historia",
+  "torreeiffel",
+  "paris",
+  "franca",
+  "shorts"
+ ],
+ "scenes": [
+  {
+   "text": "Era para ser temporária",
+   "image_query": "Eiffel Tower 1889",
+   "narration": "A Torre Eiffel foi construída para ser derrubada. Sim: ela nasceu com data para acabar."
+  },
+  {
+   "text": "Exposição de 1889",
+   "image_query": "Eiffel Tower construction 1888",
+   "narration": "Ela foi erguida para a Exposição Universal de Paris, em mil oitocentos e oitenta e nove, para marcar cem anos da Revolução Francesa. A licença era de vinte anos."
+  },
+  {
+   "text": "Tempo de obra",
+   "kind": "counter",
+   "narration": "A construção foi rápida: dois anos, dois meses e cinco dias. Quando ficou pronta, com trezentos metros, era a estrutura mais alta do mundo.",
+   "data": {
+    "value": 2,
+    "prefix": "",
+    "suffix": " anos",
+    "decimals": 0,
+    "label": "anos para construir"
+   }
+  },
+  {
+   "text": "Os artistas odiavam",
+   "image_query": "Eiffel Tower under construction",
+   "narration": "Mas muita gente odiava a ideia. Escritores e artistas famosos, como Maupassant, assinaram um protesto chamando a torre de monstruosa."
+  },
+  {
+   "text": "Seria desmontada em 1909",
+   "narration": "O plano era claro: em mil novecentos e nove, a torre seria desmontada e vendida como ferro velho."
+  },
+  {
+   "text": "O que a salvou",
+   "image_query": "Eiffel Tower radio antenna",
+   "narration": "O que a salvou foi a ciência. Gustave Eiffel instalou uma antena de rádio no topo, e o Exército percebeu o valor dela para as comunicações. A torre virou estratégica."
+  },
+  {
+   "text": "No calor, ela cresce",
+   "kind": "counter",
+   "narration": "E tem mais um fato curioso. Com o calor do verão, o ferro se dilata, e a torre pode ficar até quinze centímetros mais alta.",
+   "data": {
+    "value": 15,
+    "prefix": "",
+    "suffix": " cm",
+    "decimals": 0,
+    "label": "centímetros a mais no verão"
+   }
+  },
+  {
+   "text": "Vendida duas vezes",
+   "narration": "Em mil novecentos e vinte e cinco, o golpista Victor Lustig se passou por funcionário do governo e vendeu a torre como sucata. Duas vezes."
+  },
+  {
+   "text": "Hoje",
+   "narration": "Hoje ela é um dos monumentos mais visitados do mundo, com milhões de pessoas por ano, e foi salva justamente por ser útil."
+  },
+  {
+   "text": "Comenta aqui",
+   "narration": "Você já sabia que ela quase foi desmontada? Comenta e segue para mais curiosidades da história."
+  }
+ ]
+}

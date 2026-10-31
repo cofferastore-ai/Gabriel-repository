@@ -1,0 +1,83 @@
+{
+ "slug": "titanic-botes-salva-vidas",
+ "niche": "historia",
+ "title": "O Titanic tinha botes para pouco mais da metade das pessoas. E era legal",
+ "description": "Por que o Titanic tinha botes insuficientes e como a lei mudou depois da tragédia.",
+ "tags": [
+  "curiosidades",
+  "historia",
+  "titanic",
+  "naufragio",
+  "1912",
+  "shorts"
+ ],
+ "scenes": [
+  {
+   "text": "Botes para metade",
+   "image_query": "Titanic departing Southampton 1912",
+   "narration": "O Titanic tinha botes salva-vidas para pouco mais da metade das pessoas a bordo. E, mesmo assim, estava dentro da lei."
+  },
+  {
+   "text": "Pessoas e vagas",
+   "kind": "bars",
+   "narration": "Eram cerca de duas mil duzentas e vinte e quatro pessoas a bordo e botes com lugar para mil cento e setenta e oito.",
+   "data": {
+    "items": [
+     {
+      "label": "Vagas nos botes",
+      "value": 1178
+     },
+     {
+      "label": "Pessoas a bordo",
+      "value": 2224
+     }
+    ],
+    "suffix": "",
+    "prefix": ""
+   }
+  },
+  {
+   "text": "Regra antiga",
+   "narration": "Como isso era possível? As regras britânicas eram de uma época de navios pequenos e calculavam o número de botes pelo tamanho do navio, não pelo número de passageiros."
+  },
+  {
+   "text": "A batida",
+   "image_query": "Titanic iceberg collision 1912",
+   "narration": "Na noite de catorze de abril de mil novecentos e doze, às onze e quarenta, o navio bateu em um iceberg no Atlântico Norte."
+  },
+  {
+   "text": "Do impacto ao fim",
+   "kind": "counter",
+   "narration": "Duas horas e vinte minutos depois da meia-noite, o Titanic afundou. Foram cento e sessenta minutos entre a batida e o naufrágio.",
+   "data": {
+    "value": 160,
+    "prefix": "",
+    "suffix": " min",
+    "decimals": 0,
+    "label": "minutos até o naufrágio"
+   }
+  },
+  {
+   "text": "Os botes saem vazios",
+   "image_query": "Titanic lifeboat Carpathia 1912",
+   "narration": "Muitos botes partiram com menos gente do que podiam levar, porque a tripulação não tinha treinamento nem ordens claras sobre a capacidade."
+  },
+  {
+   "text": "O resgate",
+   "image_query": "RMS Carpathia",
+   "narration": "O navio Carpathia chegou por volta das quatro da manhã e recolheu cerca de setecentos sobreviventes. Cerca de mil e quinhentas pessoas morreram."
+  },
+  {
+   "text": "A lei mudou",
+   "narration": "Em mil novecentos e catorze, uma convenção internacional passou a exigir botes para todos a bordo e comunicação por rádio vinte e quatro horas por dia."
+  },
+  {
+   "text": "A lição",
+   "narration": "Muitas regras de segurança que existem hoje nasceram de tragédias que poderiam ter sido evitadas."
+  },
+  {
+   "text": "Comenta aqui",
+   "narration": "Qual tragédia da história você quer entender melhor? Comenta e segue para mais curiosidades."
+  }
+ ]
+}

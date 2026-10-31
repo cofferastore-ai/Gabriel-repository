@@ -1,0 +1,151 @@
+{
+ "slug": "cleopatra-tempo",
+ "niche": "historia",
+ "title": "Cleópatra viveu mais perto da Lua do que das pirâmides",
+ "description": "3 fatos da história que quebram a sua noção de tempo.",
+ "tags": [
+  "curiosidades",
+  "historia",
+  "egito",
+  "cleopatra",
+  "shorts"
+ ],
+ "scenes": [
+  {
+   "text": "Cleópatra e a Lua",
+   "image_query": "Cleopatra VII bust Altes Museum",
+   "narration": "Cleópatra viveu mais perto da chegada do homem à Lua do que da construção das pirâmides. Parece mentira, mas é só matemática."
+  },
+  {
+   "text": "Pirâmides de Gizé",
+   "image_query": "Great Pyramid of Giza",
+   "narration": "A Grande Pirâmide de Gizé foi construída por volta de dois mil quinhentos e sessenta antes de Cristo, durante o reinado do faraó Quéops. É a única das sete maravilhas do mundo antigo que ainda está de pé."
+  },
+  {
+   "text": "Cleópatra, 69 a.C.",
+   "image_query": "Cleopatra VII Philopator",
+   "narration": "Cleópatra nasceu no ano sessenta e nove antes de Cristo. E nem era egípcia de origem: sua família era grega."
+  },
+  {
+   "text": "O tempo não é linear",
+   "kind": "timeline",
+   "narration": "Veja na linha do tempo. A pirâmide está lá atrás, em dois mil quinhentos e sessenta antes de Cristo. Cleópatra nasce quase dois mil e quinhentos anos depois. E a chegada à Lua vem pouco mais de dois mil anos depois dela.",
+   "data": {
+    "events": [
+     {
+      "year": -2560,
+      "label": "Grande Pirâmide de Gizé"
+     },
+     {
+      "year": -69,
+      "label": "Nasce Cleópatra"
+     },
+     {
+      "year": 1969,
+      "label": "Homem na Lua"
+     }
+    ]
+   }
+  },
+  {
+   "text": "Já eram antigas",
+   "narration": "Na época de Cleópatra, as pirâmides já eram monumentos antiquíssimos, visitados por viajantes gregos e romanos, como turistas."
+  },
+  {
+   "text": "Tem mais dois fatos",
+   "narration": "Mas tem mais dois fatos ainda mais difíceis de acreditar. Fica até o final."
+  },
+  {
+   "text": "Mamutes",
+   "image_query": "Woolly mammoth",
+   "narration": "Fato dois. Quando a Grande Pirâmide estava sendo construída, ainda existiam mamutes-lanosos vivos no planeta."
+  },
+  {
+   "text": "Ilha de Wrangel",
+   "kind": "map",
+   "narration": "Uma população sobreviveu na ilha de Wrangel, no Ártico russo, até cerca de quatro mil anos atrás.",
+   "data": {
+    "from": {
+     "lon": 100,
+     "lat": 55,
+     "span": 150
+    },
+    "to": {
+     "lon": 175,
+     "lat": 68,
+     "span": 70
+    },
+    "highlight": [
+     "Russia"
+    ],
+    "points": [
+     {
+      "name": "Ilha de Wrangel",
+      "lon": -178.5,
+      "lat": 71.2,
+      "at": 0.35,
+      "side": "left"
+     }
+    ]
+   }
+  },
+  {
+   "text": "Universidade de Oxford",
+   "image_query": "University of Oxford Radcliffe Camera",
+   "narration": "Fato três. A Universidade de Oxford, na Inglaterra, já tinha aulas por volta do ano mil e noventa e seis."
+  },
+  {
+   "text": "Dois lados do mundo",
+   "kind": "map",
+   "narration": "Já Tenochtitlan, a capital do Império Asteca, no atual México, só foi fundada em mil trezentos e vinte e cinco.",
+   "data": {
+    "from": {
+     "lon": -50,
+     "lat": 38,
+     "span": 110
+    },
+    "to": {
+     "lon": -50,
+     "lat": 36,
+     "span": 80
+    },
+    "highlight": [
+     "United Kingdom",
+     "Mexico"
+    ],
+    "points": [
+     {
+      "name": "Oxford, 1096",
+      "lon": -1.26,
+      "lat": 51.75,
+      "at": 0.15,
+      "side": "left"
+     },
+     {
+      "name": "Tenochtitlan, 1325",
+      "lon": -99.13,
+      "lat": 19.43,
+      "at": 0.45,
+      "side": "right"
+     }
+    ]
+   }
+  },
+  {
+   "text": "Oxford ensinava há",
+   "kind": "counter",
+   "narration": "Ou seja, Oxford já ensinava havia mais de duzentos anos antes de a cidade asteca existir.",
+   "data": {
+    "value": 229,
+    "prefix": "",
+    "suffix": " anos",
+    "decimals": 0,
+    "label": "antes de Tenochtitlan existir"
+   }
+  },
+  {
+   "text": "O tempo engana",
+   "narration": "Nossa intuição sobre o tempo é péssima. Qual fato te surpreendeu mais? Comenta e segue para mais história."
+  }
+ ]
+}

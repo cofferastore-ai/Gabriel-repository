@@ -1,0 +1,3 @@
+edge-tts>=7.0
+Pillow>=10.0
+sherpa-onnx==1.12.40  # voz neural offline (provider piper)

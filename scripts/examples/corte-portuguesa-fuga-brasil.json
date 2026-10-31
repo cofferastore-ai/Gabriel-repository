@@ -1,0 +1,186 @@
+{
+ "slug": "corte-portuguesa-fuga-brasil",
+ "niche": "historia",
+ "title": "O dia em que um país inteiro mudou de endereço: Portugal veio para o Brasil",
+ "description": "Em 1807, a corte portuguesa fugiu de Napoleão e transformou o Rio de Janeiro em capital do império.",
+ "tags": [
+  "curiosidades",
+  "historia",
+  "brasil",
+  "historiadobrasil",
+  "dompedro",
+  "shorts"
+ ],
+ "scenes": [
+  {
+   "text": "Portugal mudou para o Brasil",
+   "image_query": "Prince Regent John VI of Portugal",
+   "narration": "Em mil oitocentos e sete, um país europeu inteiro mudou de endereço. A capital de Portugal passou a ser o Rio de Janeiro."
+  },
+  {
+   "text": "Napoleão chega",
+   "image_query": "Napoleon Bonaparte portrait",
+   "narration": "Napoleão estava conquistando a Europa e invadiu Portugal. O príncipe regente, Dom João, sabia que não podia vencer, e a ideia dele foi simples: fugir."
+  },
+  {
+   "text": "A fuga",
+   "kind": "map",
+   "narration": "No fim de novembro, dezenas de navios deixaram Lisboa, escoltados pela marinha britânica. Entre dez e quinze mil pessoas embarcaram às pressas, junto com a rainha Maria Primeira e toda a família real.",
+   "data": {
+    "from": {
+     "lon": -20,
+     "lat": 28,
+     "span": 90
+    },
+    "to": {
+     "lon": -30,
+     "lat": 10,
+     "span": 70
+    },
+    "highlight": [
+     "Portugal",
+     "Brazil"
+    ],
+    "points": [
+     {
+      "name": "Lisboa",
+      "lon": -9.14,
+      "lat": 38.72,
+      "at": 0.05,
+      "side": "right"
+     }
+    ],
+    "routes": [
+     {
+      "from": [
+       -9.14,
+       38.72
+      ],
+      "to": [
+       -38.5,
+       -12.97
+      ],
+      "at": 0.3,
+      "label": "Nov. 1807",
+      "curve": -0.2
+     }
+    ]
+   }
+  },
+  {
+   "text": "A viagem",
+   "narration": "Conta a história que a viagem foi dura: faltou água e os piolhos se espalharam tanto que muitas mulheres tiveram de raspar o cabelo."
+  },
+  {
+   "text": "Chegada ao Brasil",
+   "kind": "map",
+   "narration": "Eles chegaram à Bahia em janeiro de mil oitocentos e oito, e ao Rio de Janeiro em março. A colônia virou, na prática, o centro do império português.",
+   "data": {
+    "from": {
+     "lon": -42,
+     "lat": -14,
+     "span": 38
+    },
+    "to": {
+     "lon": -42,
+     "lat": -17,
+     "span": 20
+    },
+    "highlight": [
+     "Brazil"
+    ],
+    "points": [
+     {
+      "name": "Salvador",
+      "lon": -38.5,
+      "lat": -12.97,
+      "at": 0.1,
+      "side": "right"
+     },
+     {
+      "name": "Rio de Janeiro",
+      "lon": -43.2,
+      "lat": -22.9,
+      "at": 0.6,
+      "side": "right"
+     }
+    ],
+    "routes": [
+     {
+      "from": [
+       -38.5,
+       -12.97
+      ],
+      "to": [
+       -43.2,
+       -22.9
+      ],
+      "at": 0.4,
+      "label": "Mar. 1808",
+      "curve": 0.25
+     }
+    ]
+   }
+  },
+  {
+   "text": "Abertura dos portos",
+   "narration": "Ainda na Bahia, Dom João abriu os portos do Brasil às nações amigas. Até então, o comércio era restrito a Portugal."
+  },
+  {
+   "text": "O que o Rio ganhou",
+   "kind": "list",
+   "narration": "Em poucos anos, o Rio ganhou o Banco do Brasil, a Imprensa Régia, o Jardim Botânico e uma biblioteca real. A cidade virou a única capital europeia fora da Europa.",
+   "data": {
+    "items": [
+     "Banco do Brasil",
+     "Imprensa Régia",
+     "Jardim Botânico",
+     "Biblioteca Real"
+    ]
+   }
+  },
+  {
+   "text": "A corte ficou",
+   "kind": "counter",
+   "narration": "Dom João e a corte ficaram treze anos no Brasil, de mil oitocentos e oito a mil oitocentos e vinte e um.",
+   "data": {
+    "value": 13,
+    "prefix": "",
+    "suffix": " anos",
+    "decimals": 0,
+    "label": "anos de corte no Rio"
+   }
+  },
+  {
+   "text": "Do Brasil colônia ao império",
+   "kind": "timeline",
+   "narration": "Em mil oitocentos e quinze, o Brasil deixou de ser colônia e virou parte do Reino Unido de Portugal, Brasil e Algarves. Quando Dom João voltou, deixou o filho Pedro aqui. Pouco mais de um ano depois, Pedro proclamou a independência.",
+   "data": {
+    "events": [
+     {
+      "year": 1808,
+      "label": "Corte chega ao Rio"
+     },
+     {
+      "year": 1815,
+      "label": "Reino Unido"
+     },
+     {
+      "year": 1821,
+      "label": "Dom João volta"
+     },
+     {
+      "year": 1822,
+      "label": "Independência"
+     }
+    ],
+    "scale": "even",
+    "gaps": false
+   }
+  },
+  {
+   "text": "Comenta aqui",
+   "narration": "Quer ver mais sobre a história do Brasil? Comenta e segue para mais curiosidades."
+  }
+ ]
+}

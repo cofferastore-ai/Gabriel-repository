@@ -1,0 +1,70 @@
+{
+ "slug": "napoleao-altura-mito",
+ "niche": "historia",
+ "title": "Napoleão não era baixinho. De onde veio esse mito?",
+ "description": "Napoleão tinha altura média para a época. A origem do mito está em caricaturas e nas unidades de medida.",
+ "tags": [
+  "curiosidades",
+  "historia",
+  "napoleao",
+  "mitos",
+  "franca",
+  "shorts"
+ ],
+ "scenes": [
+  {
+   "text": "Napoleão era baixinho?",
+   "image_query": "Napoleon Crossing the Alps Jacques-Louis David",
+   "narration": "Napoleão era baixinho. Pelo menos é o que todo mundo diz. Só que isso é um mito, e a explicação é mais curiosa do que parece."
+  },
+  {
+   "text": "A altura real",
+   "narration": "Segundo o registro da autópsia, ele media cinco pés e duas polegadas. Parece pouco, mas eram unidades francesas, que eram maiores que as inglesas."
+  },
+  {
+   "text": "Altura em centímetros",
+   "kind": "bars",
+   "narration": "Em centímetros, dá cerca de um metro e sessenta e nove. A média dos franceses da época era algo em torno de um metro e sessenta e cinco. Ou seja, ele era até um pouco mais alto.",
+   "data": {
+    "items": [
+     {
+      "label": "Francês médio da época",
+      "value": 165
+     },
+     {
+      "label": "Napoleão",
+      "value": 169
+     }
+    ],
+    "suffix": " cm",
+    "prefix": ""
+   }
+  },
+  {
+   "text": "As caricaturas",
+   "image_query": "James Gillray Little Boney caricature",
+   "narration": "Então, de onde veio o mito? Dos inimigos. Os cartunistas britânicos, como James Gillray, desenhavam Napoleão como um homenzinho furioso, chamado Little Boney."
+  },
+  {
+   "text": "Unidades diferentes",
+   "narration": "Também houve confusão de medidas. Quando alguém converteu cinco pés e duas polegadas sem lembrar da diferença entre os sistemas, o número pareceu baixo."
+  },
+  {
+   "text": "A guarda imperial",
+   "image_query": "Napoleon Imperial Guard grenadier",
+   "narration": "E ainda tinha a Guarda Imperial. Os soldados que ficavam ao lado dele eram escolhidos por serem altos, o que o fazia parecer menor nos quadros e nas ruas."
+  },
+  {
+   "text": "O apelido",
+   "narration": "O apelido dele entre os soldados era o pequeno cabo. Era carinho, não crítica, mas ajudou a espalhar a ideia."
+  },
+  {
+   "text": "A lição",
+   "narration": "Moral da história: os inimigos de Napoleão desenharam a imagem dele, e ela colou por mais de dois séculos."
+  },
+  {
+   "text": "Comenta aqui",
+   "narration": "Qual mito da história te enganou? Comenta e segue para mais curiosidades."
+  }
+ ]
+}

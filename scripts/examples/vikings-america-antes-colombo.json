@@ -1,0 +1,65 @@
+{
+ "slug": "vikings-america-antes-colombo",
+ "niche": "historia",
+ "title": "Os vikings chegaram à América quase 500 anos antes de Colombo",
+ "description": "L'Anse aux Meadows prova que europeus estiveram na América por volta do ano 1000.",
+ "tags": [
+  "curiosidades",
+  "historia",
+  "vikings",
+  "colombo",
+  "america",
+  "shorts"
+ ],
+ "scenes": [
+  {
+   "text": "Antes de Colombo",
+   "image_query": "L'Anse aux Meadows",
+   "narration": "Quem descobriu a América? Se a resposta que você deu foi Colombo, tenho uma notícia: os vikings chegaram quase quinhentos anos antes."
+  },
+  {
+   "text": "Erik, o Vermelho",
+   "image_query": "Erik the Red Greenland Brattahlid",
+   "narration": "Tudo começou com Erik, o Vermelho, que foi expulso da Islândia e fundou um assentamento na Groenlândia por volta do ano novecentos e oitenta e cinco."
+  },
+  {
+   "text": "Leif Erikson",
+   "image_query": "Leif Erikson statue",
+   "narration": "O filho dele, Leif Erikson, ouviu histórias de terras mais a oeste e partiu em busca delas. Segundo as sagas, ele chamou a região de Vinland."
+  },
+  {
+   "text": "A prova",
+   "image_query": "L'Anse aux Meadows Newfoundland reconstruction",
+   "narration": "Por muito tempo, isso parecia só lenda. Até que, em mil novecentos e sessenta, os arqueólogos Helge e Anne Ingstad encontraram ruínas vikings em L'Anse aux Meadows, no Canadá."
+  },
+  {
+   "text": "Estudo de 2021",
+   "narration": "Em dois mil e vinte e um, cientistas usaram os anéis das árvores cortadas pelos vikings e descobriram a data exata. Eles estavam lá no ano mil e vinte e um."
+  },
+  {
+   "text": "Antes de Colombo",
+   "kind": "counter",
+   "narration": "Isso é quatrocentos e setenta e um anos antes de Colombo chegar ao Caribe, em mil quatrocentos e noventa e dois.",
+   "data": {
+    "value": 471,
+    "prefix": "",
+    "suffix": " anos",
+    "decimals": 0,
+    "label": "anos antes de Colombo"
+   }
+  },
+  {
+   "text": "E Colombo?",
+   "image_query": "Christopher Columbus portrait",
+   "narration": "E tem mais um detalhe: Colombo nunca chegou ao Canadá nem ao território continental dos Estados Unidos. As viagens dele foram pelo Caribe e pelas costas da América Central e do Sul."
+  },
+  {
+   "text": "Por que Colombo ficou famoso?",
+   "narration": "A diferença é que a viagem de Colombo abriu uma rota permanente entre os dois mundos. A dos vikings foi esquecida."
+  },
+  {
+   "text": "Comenta aqui",
+   "narration": "Qual mito da história você quer que eu desmonte? Comenta e segue para mais curiosidades."
+  }
+ ]
+}
