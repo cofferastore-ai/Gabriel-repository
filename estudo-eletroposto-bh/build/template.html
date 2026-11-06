@@ -1,0 +1,692 @@
+<title>Estudo de Recarga BH</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: relatório longo em coluna única de leitura (~72ch), com faixas largas para mapa, fotos e tabelas; navegação fixa por seção. */
+:root{
+  --paper:#F2F4F3; --surface:#FFFFFF; --ink:#14201C; --ink2:#44524D; --muted:#6B7772; --rule:#D5DCD9; --rule2:#E6EBE8;
+  --copper:#A9471F; --copper-soft:#F6E6DD; --teal:#0B6E5D; --teal-soft:#DDF0EA;
+  --s1:#5468A8; --s2:#B0522A; --s3:#008A73;
+  --good:#1C7C4A; --warn:#9A6200; --bad:#B3261E; --good-soft:#E1F1E7; --warn-soft:#F7ECD6; --bad-soft:#F7E1DF;
+  --display:"Archivo","Arial Narrow",Arial,sans-serif;
+  --body:"IBM Plex Sans",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0F1513; --surface:#18201D; --ink:#E6ECE9; --ink2:#B5C0BB; --muted:#8C9893; --rule:#2C3733; --rule2:#222B28;
+  --copper:#E08A5C; --copper-soft:#3A2419; --teal:#4DBFA9; --teal-soft:#14302A;
+  --s1:#7488D0; --s2:#D9703F; --s3:#2FA592;
+  --good:#5CC48A; --warn:#E0A84A; --bad:#F07A70; --good-soft:#15301F; --warn-soft:#33270F; --bad-soft:#3A1715;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --paper:#0F1513; --surface:#18201D; --ink:#E6ECE9; --ink2:#B5C0BB; --muted:#8C9893; --rule:#2C3733; --rule2:#222B28;
+  --copper:#E08A5C; --copper-soft:#3A2419; --teal:#4DBFA9; --teal-soft:#14302A;
+  --s1:#7488D0; --s2:#D9703F; --s3:#2FA592;
+  --good:#5CC48A; --warn:#E0A84A; --bad:#F07A70; --good-soft:#15301F; --warn-soft:#33270F; --bad-soft:#3A1715;
+  color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.read{max-width:72ch}
+h1,h2,h3{font-family:var(--display);font-stretch:118%;text-wrap:balance;line-height:1.12;margin:0}
+h1{font-size:clamp(2rem,5.2vw,3.4rem);font-weight:800;letter-spacing:-.01em}
+h2{font-size:clamp(1.5rem,3.2vw,2.15rem);font-weight:750}
+h3{font-size:1.12rem;font-weight:700;font-stretch:108%}
+p{margin:0}
+a{color:var(--teal);text-underline-offset:2px}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--copper);outline-offset:2px}
+.eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.small{font-size:.86rem}
+
+/* nav */
+.topnav{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--surface);border-bottom:1px solid var(--rule)}
+.topnav .wrap{display:flex;gap:18px;align-items:center;overflow-x:auto;scrollbar-width:none;padding-block:10px}
+.topnav .brand{font-family:var(--display);font-weight:800;font-stretch:120%;white-space:nowrap;font-size:.95rem}
+.topnav .brand b{color:var(--copper)}
+.topnav a{color:var(--ink2);text-decoration:none;font-size:.85rem;white-space:nowrap}
+.topnav a:hover{color:var(--copper)}
+
+/* hero */
+header.hero{background:var(--surface);border-bottom:1px solid var(--rule)}
+header.hero .wrap{padding-block:48px 40px;display:grid;gap:28px}
+.verdict{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;max-width:880px}
+.stamp{font-family:var(--display);font-stretch:125%;font-weight:800;font-size:1rem;letter-spacing:.04em;color:var(--teal);border:2px solid var(--teal);padding:6px 12px;border-radius:4px;white-space:nowrap;transform:rotate(-2deg);margin-top:4px}
+.verdict p{font-size:1.14rem;color:var(--ink2);max-width:62ch}
+.verdict p strong{color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+.kpi{background:var(--surface);padding:16px 16px 14px;display:grid;gap:4px;align-content:start;min-width:0}
+.kpi .v{font-family:var(--display);font-stretch:112%;font-weight:750;font-size:1.9rem;line-height:1.05;font-variant-numeric:tabular-nums}
+.kpi .v small{font-size:.95rem;font-weight:600;color:var(--muted)}
+.kpi .l{font-size:.84rem;color:var(--ink2);line-height:1.35}
+.kpi .s{font-family:var(--mono);font-size:.68rem;color:var(--muted)}
+
+section.sec{padding-block:56px 8px}
+section.sec > .wrap{display:grid;gap:22px}
+.sec-head{display:grid;gap:8px;border-top:2px solid var(--ink);padding-top:14px}
+.sec-head .eyebrow b{color:var(--copper);font-weight:500}
+.lede{font-size:1.06rem;color:var(--ink2);max-width:70ch}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px}
+.cols > *{min-width:0}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:18px;display:grid;gap:10px;align-content:start;min-width:0}
+.panel h3{margin-bottom:2px}
+.note{border-left:3px solid var(--copper);background:var(--copper-soft);padding:12px 14px;border-radius:0 4px 4px 0;font-size:.95rem}
+.note.teal{border-color:var(--teal);background:var(--teal-soft)}
+ul.clean{margin:0;padding-left:1.1em;display:grid;gap:6px}
+ul.clean li::marker{color:var(--copper)}
+
+/* tables */
+.tablebox{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:640px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--rule2);vertical-align:top}
+th{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--paper)}
+td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+tr.hl td{background:var(--teal-soft)}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:.74rem;font-weight:600;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.pill.good{background:var(--good-soft);color:var(--good)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.pill.info{background:var(--teal-soft);color:var(--teal)}
+
+/* figures */
+figure{margin:0}
+.chart{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:16px;display:grid;gap:10px;min-width:0}
+.chart svg{width:100%;height:auto;display:block;overflow:visible}
+.svgx{overflow-x:auto;min-width:0}
+.chart figcaption{font-size:.82rem;color:var(--muted)}
+.chart .ttl{font-weight:600;font-size:.95rem}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.82rem;color:var(--ink2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:3px;border-radius:2px;display:inline-block}
+svg text{font-family:var(--body);fill:var(--ink2)}
+svg .axis{stroke:var(--rule);stroke-width:1}
+svg .grid{stroke:var(--rule2);stroke-width:1}
+svg .zero{stroke:var(--ink2);stroke-width:1}
+svg .lbl{font-size:12px}
+svg .lbl-s{font-size:11px;fill:var(--muted)}
+svg .val{font-size:12px;font-weight:600;fill:var(--ink)}
+
+/* charger cards */
+.chargers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.ccard{background:var(--surface);border:1px solid var(--rule);border-radius:6px;overflow:hidden;display:grid;grid-template-rows:auto 1fr;min-width:0}
+.ccard img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;max-width:100%}
+.ccard .b{padding:16px;display:grid;gap:10px;align-content:start}
+.ccard.rec{border:2px solid var(--copper)}
+.spec{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:.86rem}
+.spec dt{color:var(--muted)}
+.spec dd{margin:0;font-variant-numeric:tabular-nums}
+.credit{font-size:.7rem;color:var(--muted);line-height:1.3}
+
+/* places */
+.places{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.place{background:var(--surface);border:1px solid var(--rule);border-radius:6px;overflow:hidden;display:grid;grid-template-columns:200px 1fr;min-width:0}
+.place .ph{position:relative;background:var(--rule2)}
+.place .ph img{width:100%;height:100%;object-fit:cover;display:block;min-height:190px;max-width:100%}
+.place .rank{position:absolute;top:8px;left:8px;background:var(--copper);color:#fff;font-family:var(--display);font-weight:800;font-stretch:120%;font-size:.95rem;min-width:30px;height:30px;display:grid;place-items:center;border-radius:4px;padding:0 6px}
+.place .b{padding:14px 16px;display:grid;gap:8px;align-content:start;min-width:0}
+.place .addr{font-size:.82rem;color:var(--muted)}
+.place p{font-size:.88rem;color:var(--ink2)}
+.score{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.78rem}
+.score .bar{flex:1;height:6px;background:var(--rule2);border-radius:3px;overflow:hidden}
+.score .bar i{display:block;height:100%;background:var(--copper);border-radius:3px}
+.place.top{border-color:var(--copper)}
+
+/* map */
+.mapbox{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:12px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px}
+.mapbox svg{width:100%;height:auto;display:block}
+.map-water{fill:var(--teal-soft);stroke:var(--teal);stroke-width:1}
+.map-road{fill:none;stroke:var(--rule);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.map-road2{fill:none;stroke:var(--rule);stroke-width:2.5;stroke-dasharray:1 0}
+.map-cand circle{fill:var(--copper);stroke:var(--surface);stroke-width:2}
+.map-cand text{fill:#fff;font-weight:700;font-size:11px;font-family:var(--display)}
+.map-comp rect{fill:var(--s1);stroke:var(--surface);stroke-width:2}
+.map-label{font-size:10.5px;fill:var(--ink2)}
+.map-ref{font-size:10px;fill:var(--muted);font-style:italic}
+.maplist{display:grid;gap:6px;font-size:.84rem;align-content:start}
+.maplist .k{display:flex;gap:8px;align-items:baseline}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--copper);display:inline-block;flex:none;transform:translateY(1px)}
+.sq{width:11px;height:11px;background:var(--s1);display:inline-block;flex:none;transform:translateY(1px)}
+
+/* simulator */
+.sim{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+.sim .ctrl{display:grid;gap:14px}
+.sim label{display:grid;gap:4px;font-size:.88rem}
+.sim label .row{display:flex;justify-content:space-between;gap:10px}
+.sim label output{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--copper);font-weight:500}
+.sim input[type=range]{width:100%;accent-color:var(--copper)}
+.simout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:6px;overflow:hidden;align-content:start}
+.simout div{background:var(--surface);padding:14px;display:grid;gap:3px}
+.simout .v{font-family:var(--display);font-stretch:112%;font-weight:750;font-size:1.5rem;font-variant-numeric:tabular-nums}
+.simout .l{font-size:.8rem;color:var(--ink2)}
+.simout .wide{grid-column:1/-1}
+#sim-verdict{font-size:.95rem}
+
+/* timeline */
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.step{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:14px;display:grid;gap:8px;align-content:start;min-width:0}
+.step .when{font-family:var(--mono);font-size:.72rem;color:var(--copper);letter-spacing:.05em;text-transform:uppercase}
+.step ul{margin:0;padding-left:1em;font-size:.86rem;display:grid;gap:4px;color:var(--ink2)}
+
+.sources{columns:2 320px;column-gap:28px;font-size:.84rem;color:var(--ink2)}
+.sources li{break-inside:avoid;margin-bottom:6px}
+footer{padding-block:40px 60px;color:var(--muted);font-size:.82rem}
+
+#tip{position:fixed;pointer-events:none;z-index:20;background:var(--ink);color:var(--paper);font-size:.8rem;padding:6px 9px;border-radius:4px;max-width:260px;line-height:1.35;font-variant-numeric:tabular-nums}
+
+@media (max-width:860px){
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .chargers{grid-template-columns:1fr}
+  .places{grid-template-columns:1fr}
+  .mapbox{grid-template-columns:1fr}
+  .sim{grid-template-columns:1fr}
+  .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:520px){
+  .svgx svg{min-width:480px}
+  .svgx.wide svg{min-width:640px}
+  .place{grid-template-columns:1fr}
+  .place .ph img{min-height:0;aspect-ratio:16/9}
+  .verdict{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .kpi .v{font-size:1.5rem}
+}
+@media (prefers-reduced-motion:no-preference){ .place,.ccard{transition:border-color .2s} }
+@media print{
+  body{background:#fff}
+  .topnav,#tip,.noprint{display:none!important}
+  section.sec{padding-block:26px 0}
+  .pb{break-before:page}
+  .sec-head,.lede{break-after:avoid}
+  .place,.ccard,.panel,.chart,.step,.mapbox,tr,.kpi{break-inside:avoid}
+  .tablebox{overflow:visible}
+  table{min-width:0}
+  header.hero .wrap{padding-block:28px 22px}
+  .sim .ctrl{display:none}
+  .sim{grid-template-columns:1fr}
+}
+</style>
+
+<nav class="topnav" aria-label="Seções">
+  <div class="wrap">
+    <span class="brand">Recarga <b>BH</b></span>
+    <a href="#veredito">Veredito</a>
+    <a href="#mercado">Mercado</a>
+    <a href="#carregadores">Carregadores</a>
+    <a href="#fornecedores">Fornecedores</a>
+    <a href="#concorrencia">Concorrência</a>
+    <a href="#locais">Locais</a>
+    <a href="#financas">Finanças</a>
+    <a href="#simulador">Simulador</a>
+    <a href="#riscos">Riscos</a>
+    <a href="#plano">Plano</a>
+    <a href="#fontes">Fontes</a>
+  </div>
+</nav>
+
+<header class="hero" id="veredito">
+  <div class="wrap">
+    <div class="eyebrow">Estudo de mercado e viabilidade · Belo Horizonte e RMBH · novembro de 2026</div>
+    <h1>Vale a pena abrir um eletroposto em Belo Horizonte?</h1>
+    <div class="verdict">
+      <div class="stamp">SIM, COM CONDIÇÕES</div>
+      <p>BH é a <strong>3ª cidade do país em vendas de carros eletrificados</strong> e só a <strong>9ª capital em infraestrutura de recarga</strong>. A demanda existe e cresce rápido. O negócio fecha a conta quando três coisas acontecem juntas: <strong>carregador rápido DC de 60 kW</strong>, <strong>energia a no máximo R$ 0,90/kWh</strong> e um <strong>ponto com fluxo diário de motoristas de aplicativo</strong>. Sem essas três condições, o retorno passa de cinco anos e o investimento não se justifica.</p>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><span class="v num">{{BH_SALES_SHARE}}<small>%</small></span><span class="l">das vendas nacionais de eletrificados estão em BH</span><span class="s">ABVE · 1º sem. 2026</span></div>
+      <div class="kpi"><span class="v num">{{BH_CHG_SHARE}}<small>%</small></span><span class="l">dos eletropostos do Brasil estão em BH ({{BH_CHG_GAP}}× menos que a fatia de vendas)</span><span class="s">ABVE · jun. 2026</span></div>
+      <div class="kpi"><span class="v num">{{CAPEX_K}}<small> mil</small></span><span class="l">investimento estimado do 1º ponto (DC 60 kW + AC 22 kW, obra e projeto)</span><span class="s">Estimativa deste estudo</span></div>
+      <div class="kpi"><span class="v num">{{PB_BASE}}<small> meses</small></span><span class="l">retorno do investimento no cenário base ({{PB_OPT}} meses no otimista)</span><span class="s">Modelo deste estudo</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- MERCADO -->
+<section class="sec" id="mercado">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow"><b>1</b> · Mercado</span><h2>A frota cresce mais rápido do que a rede de recarga</h2></div>
+    <p class="lede read">O Brasil passou de 1 milhão de eletrificados vendidos em setembro de 2026. Só de janeiro a agosto foram 328.477 emplacamentos, e a ABVE projeta cerca de 508 mil no ano, mais que o dobro de 2025. Em agosto, 22% dos carros leves vendidos no país já eram eletrificados, e 83% desses eram plug-in, ou seja, carros que precisam de tomada.</p>
+    <div class="cols">
+      <figure class="chart">
+        <div class="ttl">Vendas de eletrificados leves no Brasil</div>
+        <div class="svgx">{{CHART_SALES}}</div>
+        <figcaption>Fonte: ABVE (via Autodata, Forbes e Webmotors). 2026 projetado pela ABVE em outubro de 2026.</figcaption>
+      </figure>
+      <figure class="chart">
+        <div class="ttl">BH: fatia nas vendas × fatia nos eletropostos</div>
+        <div class="svgx">{{CHART_GAP}}</div>
+        <figcaption>Vendas: 9.896 eletrificados em BH de 215.023 no Brasil (1º sem. 2026). Eletropostos: 399 em BH de 25.429 no Brasil (jun. 2026). Fonte: ABVE via Diário do Comércio.</figcaption>
+      </figure>
+    </div>
+    <div class="cols">
+      <div class="panel">
+        <span class="eyebrow">Minas Gerais</span>
+        <h3>Segundo ou terceiro estado do país, conforme o mês</h3>
+        <ul class="clean small">
+          <li>1º semestre de 2026: 16.341 eletrificados, 7,6% do Brasil (3º lugar).</li>
+          <li>Janeiro a maio de 2026: alta de 172% sobre o mesmo período de 2025.</li>
+          <li>Setembro de 2026: 4.346 emplacamentos, 2º lugar, à frente do Distrito Federal.</li>
+          <li>BH concentra cerca de 60% das vendas do estado.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <span class="eyebrow">Rede de recarga</span>
+        <h3>Cresce, mas a partir de uma base pequena</h3>
+        <ul class="clean small">
+          <li>Brasil: 14.827 eletropostos em fev. 2025 e 25.429 em jun. 2026 (+71%).</li>
+          <li>Minas Gerais: 1.906 eletropostos, 7,5% do total.</li>
+          <li>BH: 399 eletropostos, a maioria AC lenta e gratuita em shoppings.</li>
+          <li>Oferta de recarga rápida pública cresceu 167% em um ano no país.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <span class="eyebrow">Quem recarrega fora de casa</span>
+        <h3>O cliente que dá volume é o motorista de aplicativo</h3>
+        <p class="small">Quem tem casa com garagem recarrega à noite por R$ 0,80 a R$ 1,00/kWh. Quem paga recarga rápida todo dia é o motorista de app (BYD Dolphin e Dolphin Mini lideram), o morador de prédio sem tomada na vaga e quem está em viagem. Só a área de aplicativos da Rodoviária de BH recebe cerca de 2.300 viagens por dia.</p>
+      </div>
+    </div>
+    <div class="note read"><strong>Leitura do especialista.</strong> A janela de oportunidade é de 12 a 24 meses. Grandes grupos já se movimentam em Minas: a CMU/Watton anunciou até R$ 70 milhões em eletropostos, a Raízen (Shell Recharge) assinou acordo com o governo estadual e a Cemig abriu chamada pública para eletrovias gratuitas. Os melhores pontos de BH vão ser contratados nesse período, e quem chegar depois vai disputar pontos piores.</div>
+  </div>
+</section>
+
+<!-- CARREGADORES -->
+<section class="sec pb" id="carregadores">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow"><b>2</b> · Tipos de carregador</span><h2>Qual carregador compensa: o DC de 60 kW</h2></div>
+    <p class="lede read">Existem três famílias de carregador público. A diferença está na corrente (alternada ou contínua), na potência e, por consequência, no tempo que o carro fica parado, no custo de instalação e na receita por vaga.</p>
+    <div class="chargers">
+      <article class="ccard">
+        <img src="{{IMG_c_ac}}" alt="Carregador de parede tipo wallbox em corrente alternada">
+        <div class="b">
+          <span class="eyebrow">AC · lento · tomada Tipo 2</span>
+          <h3>Wallbox 7,4 a 22 kW</h3>
+          <dl class="spec">
+            <dt>Recarga 10→80%</dt><dd>3 a 6 horas</dd>
+            <dt>Equipamento</dt><dd>R$ 3,5 mil a R$ 15 mil</dd>
+            <dt>Instalação</dt><dd>R$ 2 mil a R$ 8 mil</dd>
+            <dt>Receita média</dt><dd>≈ R$ 375 por ponto/mês</dd>
+            <dt>Onde faz sentido</dt><dd>Shopping, hotel, escritório</dd>
+          </dl>
+          <p class="small">O carro limita a potência: o Dolphin Mini aceita só 6,6 kW em AC. Um carregador de 22 kW entrega 6,6 kW para ele. Serve como amenidade e para negociar com o local, não como fonte de lucro.</p>
+          <span class="credit">Foto: {{CR_c_ac}}</span>
+        </div>
+      </article>
+      <article class="ccard rec">
+        <img src="{{IMG_c_dc}}" alt="Estação de recarga rápida em corrente contínua em estacionamento">
+        <div class="b">
+          <span class="eyebrow">DC · rápido · conector CCS2</span>
+          <h3>DC 40 a 60 kW <span class="pill good">Recomendado</span></h3>
+          <dl class="spec">
+            <dt>Recarga 10→80%</dt><dd>30 a 45 minutos</dd>
+            <dt>Equipamento</dt><dd>R$ 50 mil a R$ 130 mil</dd>
+            <dt>Instalação</dt><dd>R$ 25 mil a R$ 60 mil</dd>
+            <dt>Receita média</dt><dd>R$ 4 mil a R$ 10,5 mil por ponto/mês</dd>
+            <dt>Onde faz sentido</dt><dd>Supermercado, shopping, polo de apps</dd>
+          </dl>
+          <p class="small">Casa com a frota real de BH: Dolphin Mini recarrega a até 30–40 kW e o Dolphin a 60 kW em DC. Cabe em ligação de baixa tensão reforçada e tem o melhor retorno por real investido segundo a VoltBras.</p>
+          <span class="credit">Foto: {{CR_c_dc}}</span>
+        </div>
+      </article>
+      <article class="ccard">
+        <img src="{{IMG_c_hpc}}" alt="Estação de recarga ultrarrápida com carro conectado">
+        <div class="b">
+          <span class="eyebrow">DC · ultrarrápido · CCS2</span>
+          <h3>DC 120 a 350 kW</h3>
+          <dl class="spec">
+            <dt>Recarga 10→80%</dt><dd>15 a 25 minutos</dd>
+            <dt>Equipamento</dt><dd>R$ 150 mil a R$ 450 mil</dd>
+            <dt>Rede elétrica</dt><dd>Média tensão, transformador próprio (+R$ 100–250 mil)</dd>
+            <dt>Receita média</dt><dd>≈ R$ 12,6 mil por ponto/mês</dd>
+            <dt>Onde faz sentido</dt><dd>Rodovia, hub com várias vagas</dd>
+          </dl>
+          <p class="small">Custa mais de 3 vezes o DC de 60 kW e fatura só 20% a mais, porque a maioria dos carros vendidos não aceita essa potência. É a etapa 3 da expansão, não o primeiro ponto.</p>
+          <span class="credit">Foto: {{CR_c_hpc}}</span>
+        </div>
+      </article>
+    </div>
+    <div class="tablebox">
+      <table>
+        <thead><tr><th>Faixa</th><th class="r">Capex médio</th><th class="r">Receita média/mês</th><th class="r">Receita ÷ capex</th><th>Leitura</th></tr></thead>
+        <tbody>
+          <tr><td>AC (até 22 kW)</td><td class="r">R$ 7.000</td><td class="r">R$ 375</td><td class="r">5,4%</td><td>Barato, mas a receita absoluta não paga uma empresa</td></tr>
+          <tr class="hl"><td>DC 30–60 kW</td><td class="r">R$ 87.500</td><td class="r">R$ 4.000</td><td class="r">4,6%</td><td>Melhor equilíbrio; payback médio de 18 meses no estudo</td></tr>
+          <tr><td>DC 60–120 kW</td><td class="r">não divulgado</td><td class="r">R$ 10.500</td><td class="r">–</td><td>Pontos já maduros, com alta ocupação</td></tr>
+          <tr><td>DC acima de 120 kW</td><td class="r">R$ 275.000</td><td class="r">R$ 12.600</td><td class="r">4,6%</td><td>Exige escala e ligação em média tensão</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small muted read">Fonte: Anuário VoltBras 2025, com 1.249 carregadores de 56 redes brasileiras (via Canal VE, nov. 2025). Conectores: no Brasil o padrão é Tipo 2 para AC e CCS2 para DC. CHAdeMO e GB/T são legados e não justificam investimento novo.</p>
+  </div>
+</section>
+
+<!-- FORNECEDORES -->
+<section class="sec" id="fornecedores">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow"><b>3</b> · Fornecedores</span><h2>Quem vende carregadores e quem opera o software</h2></div>
+    <p class="lede read">Vocês vão precisar de dois fornecedores: o fabricante do carregador e a plataforma que liga o carregador ao aplicativo, cobra o cliente e mostra o ponto nos mapas. Exijam sempre protocolo <span class="num">OCPP 1.6J</span> ou superior: ele permite trocar de plataforma sem trocar o equipamento.</p>
+    <div class="tablebox">
+      <table>
+        <thead><tr><th>Fabricante</th><th>Origem</th><th>Linha para negócio</th><th>Preço de referência</th><th>Observação</th></tr></thead>
+        <tbody>
+          <tr class="hl"><td><strong>WEG</strong></td><td>Jaraguá do Sul (SC)</td><td>WEMOB Parking DC 40 kW, Station 60 kW, Wall AC</td><td class="num">DC 40 kW: R$ 78 mil a R$ 102 mil em revendas</td><td>Fabricação nacional, assistência em todo o país. Segundo a CB Insights, comprou participação na Tupinambá (não confirmado)</td></tr>
+          <tr><td><strong>Intelbras</strong></td><td>São José (SC)</td><td>EVE AC 7,4 kW; DC 60 kW (EVE 0600FP) e 120 kW (EVE 1200FC)</td><td class="num">AC 7,4 kW: ≈ R$ 3,5 mil; DC sob cotação</td><td>Rede grande de distribuidores e instaladores</td></tr>
+          <tr><td><strong>Nansen</strong></td><td>Contagem (MG)</td><td>Carregadores para ônibus e veículos leves</td><td>Sob cotação</td><td>Fornece 27 carregadores para os ônibus elétricos de BH. Fornecedor local, bom para manutenção</td></tr>
+          <tr><td><strong>BYD</strong></td><td>China / Camaçari (BA)</td><td>Linha própria AC e DC</td><td>Sob cotação</td><td>Marca dominante da frota; opera 125 carregadores rápidos públicos</td></tr>
+          <tr><td><strong>ABB E-mobility</strong></td><td>Suíça</td><td>Terra AC, Terra DC 24 a 360 kW</td><td>Sob cotação (faixa premium)</td><td>Referência mundial em confiabilidade; mais caro</td></tr>
+          <tr><td><strong>Siemens, Schneider, Wallbox, Delta, Autel</strong></td><td>Importados</td><td>AC e DC de 22 a 180 kW</td><td>Sob cotação</td><td>Vale cotar para comparar prazo, garantia e assistência em MG</td></tr>
+          <tr><td>Genéricos chineses (via distribuidoras)</td><td>China</td><td>DC 40–60 kW com 2 saídas CCS2</td><td class="num">DC 60 kW: ≈ R$ 74 mil a R$ 76 mil</td><td>Mais barato; atenção a peças de reposição e garantia local</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tablebox">
+      <table>
+        <thead><tr><th>Plataforma de gestão (CPO)</th><th>O que faz</th><th>Para vocês</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Tupinambá Energia</strong></td><td>Software e app de recarga, compatível com qualquer carregador OCPP, com opção de marca própria</td><td>Boa opção para operar com a marca da empresa de vocês</td></tr>
+          <tr><td><strong>Voltbras</strong></td><td>Plataforma de marca branca usada por Ipiranga, Multiplan, EDP e Zletric</td><td>Também publica o anuário de mercado; bom parceiro de dados</td></tr>
+          <tr><td><strong>EZVolt (Vibra)</strong></td><td>Instala e opera eletropostos em shoppings, supermercados e condomínios</td><td>Concorrente na disputa por pontos e possível parceiro</td></tr>
+          <tr><td><strong>Zletric</strong></td><td>Rede própria e de parceiros; anunciou expansão para mais 9 capitais em 2026</td><td>Concorrente direto se entrar em BH</td></tr>
+          <tr><td>PlugShare, Electromaps</td><td>Mapas que os motoristas usam para achar recarga</td><td>Cadastrar o ponto no dia da inauguração</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small muted read">Preços de equipamento coletados em revendas online (Magnani, CCR Engenharia, Distrisol) em 2026. Variam muito entre revendas: peçam no mínimo três cotações formais com instalação, garantia de 3 anos e contrato de manutenção.</p>
+  </div>
+</section>
+
+<!-- CONCORRÊNCIA -->
+<section class="sec" id="concorrencia">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow"><b>4</b> · Benchmark</span><h2>Quem já recarrega carros em BH, e por quanto</h2></div>
+    <p class="lede read">A maior parte da oferta em BH é recarga AC gratuita em shopping, que atrai o cliente do shopping mas não resolve a vida de quem roda o dia todo. Recarga rápida paga ainda é rara na cidade, e é nela que está o espaço.</p>
+    <div class="tablebox">
+      <table>
+        <thead><tr><th>Ponto</th><th>Região</th><th>Tipo</th><th class="r">Preço</th><th>O que isso significa</th></tr></thead>
+        <tbody>
+          <tr><td>Rodoviária de BH (Terminais BH + Grupo New)</td><td>Centro</td><td>2 × DC 60 kW, 4 carros ao mesmo tempo, 24 h</td><td class="r num">R$ 1,89/kWh (R$ 1,59 promocional)</td><td>Principal referência de preço; foco em aplicativo. Inaugurado em ago. 2026</td></tr>
+          <tr><td>Power Shopping Centerminas (Watton/CMU)</td><td>Nordeste (União)</td><td>2 estações DC rápidas</td><td class="r">não divulgado</td><td>Concorrente novo (set. 2026) no eixo da Cristiano Machado</td></tr>
+          <tr><td>ItaúPower Shopping</td><td>Contagem</td><td>DC 240 kW + 2 × AC 22 kW</td><td class="r">não divulgado</td><td>Atende bem a região oeste e Contagem</td></tr>
+          <tr><td>ViaShopping Barreiro</td><td>Barreiro</td><td>DC 60 kW</td><td class="r">não divulgado</td><td>Barreiro já tem recarga rápida</td></tr>
+          <tr><td>Shell Recharge – Posto Oceano</td><td>Barro Preto</td><td>DC rápido</td><td class="r">não divulgado</td><td>Rede Raízen, forte em postos de combustível</td></tr>
+          <tr><td>BH Shopping, DiamondMall, Pátio Savassi (Multiplan)</td><td>Centro-Sul</td><td>AC, 18 vagas no total</td><td class="r">gratuito (até 2023)</td><td>Zona Sul tem AC grátis, mas não tem DC pago em supermercado</td></tr>
+          <tr><td>Assaí Belvedere</td><td>Centro-Sul</td><td>3 pontos AC</td><td class="r">gratuito para clientes</td><td>Mostra que supermercado aceita o modelo</td></tr>
+          <tr><td>Cemig SIM (Mercado Central, Super Nosso Lourdes)</td><td>Centro-Sul</td><td>Pontos públicos</td><td class="r">via app SIM Charger</td><td>Distribuidora também atua no varejo de recarga</td></tr>
+          <tr><td>Volvo (rede nacional)</td><td>Vários</td><td>DC e AC</td><td class="r num">R$ 2,90 DC · R$ 2,00 AC</td><td>Fim da recarga grátis em 2026; teto de preço do mercado</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cols">
+      <div class="panel"><span class="eyebrow">Faixa de preço praticada</span><h3 class="num">R$ 1,89 a R$ 2,90 por kWh em DC</h3><p class="small">Média nacional de recarga rápida: R$ 2,00 a R$ 2,80/kWh. Recarga em casa: R$ 0,80 a R$ 1,00/kWh. Recomendação: abrir a R$ 2,19 e ter preço de fidelidade para motoristas de aplicativo cadastrados (R$ 1,99).</p></div>
+      <div class="panel"><span class="eyebrow">Conta do motorista</span><h3 class="num">R$ 0,33/km contra R$ 0,56/km na gasolina</h3><p class="small">Um Dolphin gasta cerca de 15 kWh/100 km; a R$ 2,19/kWh, sai R$ 0,33 por km. Um carro a gasolina de 11 km/l, com litro a R$ 6,20 (premissa), sai R$ 0,56 por km. Mesmo pagando recarga rápida, o motorista economiza cerca de 40%.</p></div>
+      <div class="panel"><span class="eyebrow">Tendência</span><h3>O gratuito está acabando</h3><p class="small">A Volvo encerrou a recarga grátis em junho de 2026. Shoppings mantêm AC grátis como amenidade, mas DC grátis não se sustenta. Isso favorece quem cobra preço justo com equipamento confiável.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- LOCAIS -->
+<section class="sec pb" id="locais">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow"><b>5</b> · Locais</span><h2>Onde instalar o primeiro ponto</h2></div>
+    <p class="lede read">Avaliamos 11 locais sem recarga rápida paga identificada. Cada um recebeu nota de 1 a 5 em seis critérios: demanda de elétricos no entorno (peso 25%), fluxo de motoristas de app (20%), ausência de DC concorrente por perto (20%), interesse e estrutura do local (15%), tempo de permanência compatível com 30–45 min (10%) e facilidade elétrica (10%).</p>
+    <div class="mapbox">
+      <figure>{{MAP}}</figure>
+      <div class="maplist">
+        <div class="eyebrow">Legenda</div>
+        <div class="k"><span class="dot"></span><span>Local candidato (número = posição no ranking)</span></div>
+        <div class="k"><span class="sq"></span><span>Concorrente com recarga (rápida ou grátis)</span></div>
+        <p class="small muted">Mapa esquemático. Posições aproximadas, para leitura de regiões, não para navegação. Conferir cada endereço no Google Maps e no PlugShare antes da visita.</p>
+        {{MAP_LIST}}
+      </div>
+    </div>
+    <figure class="chart">
+      <div class="ttl">Nota ponderada por local (0 a 5)</div>
+      <div class="svgx wide">{{CHART_SCORES}}</div>
+      <figcaption>Notas atribuídas por este estudo a partir das fontes citadas. Pesos: demanda 25%, aplicativo 20%, concorrência 20%, local 15%, permanência 10%, elétrica 10%.</figcaption>
+    </figure>
+    <div class="places">
+      {{PLACES}}
+    </div>
+    <div class="note teal read"><strong>Recomendação.</strong> Negociar ao mesmo tempo com os cinco primeiros do ranking. O vencedor não é o de maior nota, e sim o que oferecer as melhores condições: energia a até R$ 0,90/kWh (os shoppings e supermercados grandes compram em média tensão e pagam bem menos que a tarifa comercial comum), vaga coberta e visível, contrato de 8 a 10 anos e exclusividade de recarga paga no imóvel.</div>
+    <div class="tablebox">
+      <table>
+        <thead><tr><th>Já atendidos (fora da lista)</th><th>Motivo</th></tr></thead>
+        <tbody>
+          <tr><td>BH Shopping, DiamondMall, Pátio Savassi</td><td>Têm AC grátis da Multiplan e contratos com operadores; disputa difícil</td></tr>
+          <tr><td>ViaShopping Barreiro, ItaúPower, Rodoviária, Centerminas</td><td>Já têm DC rápido</td></tr>
+          <tr><td>Assaí Belvedere</td><td>Já tem 3 pontos AC; possível alvo só para conversão em DC</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- FINANÇAS -->
+<section class="sec pb" id="financas">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow"><b>6</b> · Viabilidade financeira</span><h2>O primeiro ponto: quanto custa e quando volta</h2></div>
+    <p class="lede read">O modelo considera um DC de 60 kW com duas saídas CCS2 mais um AC de 22 kW como amenidade, em local de terceiro, com energia fornecida pelo local. Os três cenários mudam só o volume vendido.</p>
+    <div class="cols">
+      <div class="tablebox">
+        <table style="min-width:0">
+          <thead><tr><th>Investimento (capex)</th><th class="r">R$</th></tr></thead>
+          <tbody>{{CAPEX_ROWS}}</tbody>
+        </table>
+      </div>
+      <div class="tablebox">
+        <table style="min-width:0">
+          <thead><tr><th>Premissas do cenário base</th><th class="r">Valor</th></tr></thead>
+          <tbody>
+            <tr><td>Preço ao motorista (DC)</td><td class="r num">R$ {{P}}/kWh</td></tr>
+            <tr><td>Custo da energia (reembolso ao local)</td><td class="r num">R$ {{E}}/kWh</td></tr>
+            <tr><td>Impostos (Simples, estimativa)</td><td class="r num">11% da receita</td></tr>
+            <tr><td>Plataforma + meio de pagamento</td><td class="r num">10% da receita</td></tr>
+            <tr><td>Participação do local</td><td class="r num">8% da receita</td></tr>
+            <tr><td>Margem por kWh após tudo isso</td><td class="r num"><strong>R$ {{MARGIN}}</strong></td></tr>
+            <tr><td>Custos fixos (manutenção, seguro, 4G, contador)</td><td class="r num">R$ {{FIX}}/mês</td></tr>
+            <tr><td>Volume em regime (base)</td><td class="r num">6.000 kWh/mês ≈ 8 recargas/dia</td></tr>
+            <tr><td>Rampa de ocupação</td><td class="r">35% no mês 1 até 100% no mês 12</td></tr>
+            <tr><td>Crescimento depois do 1º ano</td><td class="r num">10% / 20% / 25% ao ano</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <figure class="chart">
+      <div class="ttl">Caixa acumulado do 1º ponto em 60 meses</div>
+      <div class="legend"><span><i style="background:var(--s1)"></i>Conservador · 3.000 kWh/mês</span><span><i style="background:var(--s2)"></i>Base · 6.000 kWh/mês</span><span><i style="background:var(--s3)"></i>Otimista · 9.000 kWh/mês</span></div>
+      <div class="svgx wide">{{CHART_CASH}}</div>
+      <figcaption>Volume em regime, depois da rampa de 12 meses. Taxa de desconto de 15% ao ano no VPL. Teto físico de 13.000 kWh/mês para um DC de 60 kW com 2 saídas.</figcaption>
+    </figure>
+    <div class="tablebox">
+      <table>
+        <thead><tr><th>Cenário</th><th class="r">Recargas/dia em regime</th><th class="r">Resultado/mês no mês 12</th><th class="r">Resultado/mês no mês 60</th><th class="r">Payback</th><th class="r">VPL 5 anos (15% a.a.)</th><th>Leitura</th></tr></thead>
+        <tbody>{{SCEN_ROWS}}</tbody>
+      </table>
+    </div>
+    <div class="cols">
+      <div>
+        <div class="tablebox">
+          <table style="min-width:0">
+            <thead><tr><th>Resultado mensal (base, 6.000 kWh)</th><th class="r">Energia R$ 0,75</th><th class="r">R$ 0,85</th><th class="r">R$ 1,13</th></tr></thead>
+            <tbody>{{SENS_ROWS}}</tbody>
+          </table>
+        </div>
+        <p class="small muted" style="margin-top:8px">R$ 1,13/kWh é o custo de uma ligação comercial própria em baixa tensão na Cemig (fatura de referência de 2026, com impostos). Com esse custo, o negócio quase não dá lucro.</p>
+      </div>
+      <div class="panel">
+        <span class="eyebrow">O que realmente decide o resultado</span>
+        <h3>Ocupação e custo de energia, nessa ordem</h3>
+        <ul class="clean small">
+          <li><strong>Ocupação:</strong> cada recarga a mais por dia soma cerca de R$ {{PER_SESSION}} ao mês. Com {{BE_DAY}} recargas/dia o ponto já paga os custos mensais; o lucro que devolve o investimento vem de cada recarga acima disso.</li>
+          <li><strong>Energia:</strong> pagar R$ 1,13 em vez de R$ 0,85 corta R$ 1.700 por mês. Por isso a energia tem que vir do local (média tensão) ou de geração solar compartilhada.</li>
+          <li><strong>Capex:</strong> se o local pagar a obra elétrica (é comum em supermercado), o investimento cai para cerca de R$ 125 mil e o payback do base cai para {{PB_LEVER}} meses.</li>
+          <li><strong>Âncora:</strong> um contrato com frota de aplicativo, locadora ou cooperativa de táxi que garanta 3 recargas/dia transforma o cenário conservador em base.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIMULADOR -->
+<section class="sec" id="simulador">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow"><b>7</b> · Simulador</span><h2>Testem as próprias premissas</h2></div>
+    <p class="lede read noprint">Mexam nos controles para ver o resultado mensal em regime e o payback simples. Os valores iniciais são os do cenário base.</p>
+    <div class="sim">
+      <div class="panel ctrl">
+        <label for="sim-price"><span class="row"><span>Preço ao motorista (R$/kWh)</span><output id="o-price"></output></span><input id="sim-price" type="range" min="1.59" max="2.99" step="0.05" value="2.19"></label>
+        <label for="sim-energy"><span class="row"><span>Custo da energia (R$/kWh)</span><output id="o-energy"></output></span><input id="sim-energy" type="range" min="0.55" max="1.30" step="0.01" value="0.85"></label>
+        <label for="sim-sessions"><span class="row"><span>Recargas por dia (25 kWh cada)</span><output id="o-sessions"></output></span><input id="sim-sessions" type="range" min="1" max="17" step="1" value="8"></label>
+        <label for="sim-capex"><span class="row"><span>Investimento total (R$ mil)</span><output id="o-capex"></output></span><input id="sim-capex" type="range" min="90" max="320" step="5" value="160"></label>
+        <label for="sim-ded"><span class="row"><span>Impostos + plataforma + local (% da receita)</span><output id="o-ded"></output></span><input id="sim-ded" type="range" min="15" max="40" step="1" value="29"></label>
+        <label for="sim-fix"><span class="row"><span>Custos fixos (R$/mês)</span><output id="o-fix"></output></span><input id="sim-fix" type="range" min="600" max="4000" step="50" value="1350"></label>
+      </div>
+      <div class="simout" aria-live="polite">
+        <div><span class="v" id="r-kwh"></span><span class="l">kWh vendidos por mês</span></div>
+        <div><span class="v" id="r-rev"></span><span class="l">Receita bruta por mês</span></div>
+        <div><span class="v" id="r-mg"></span><span class="l">Margem por kWh</span></div>
+        <div><span class="v" id="r-res"></span><span class="l">Resultado por mês</span></div>
+        <div><span class="v" id="r-pb"></span><span class="l">Payback simples</span></div>
+        <div><span class="v" id="r-be"></span><span class="l">Recargas/dia para empatar</span></div>
+        <div class="wide"><span id="sim-verdict"></span></div>
+      </div>
+    </div>
+    <p class="small muted read">O simulador usa o volume já em regime (sem rampa nem crescimento) e soma a receita do AC de 22 kW (400 kWh/mês a R$ 1,49). Por isso o payback dele é um pouco menor que o do modelo completo acima.</p>
+  </div>
+</section>
+
+<!-- MODELO DE NEGÓCIO + RISCOS -->
+<section class="sec pb" id="riscos">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow"><b>8</b> · Modelo de negócio, regras e riscos</span><h2>Como contratar o local e o que pode dar errado</h2></div>
+    <div class="cols">
+      <div class="panel">
+        <span class="eyebrow">Proposta para o local</span>
+        <h3>Investimento zero para o shopping ou supermercado</h3>
+        <ul class="clean small">
+          <li>Vocês compram, instalam, operam e fazem a manutenção.</li>
+          <li>O local fornece a vaga e a energia, reembolsada por kWh medido, e recebe 5% a 10% da receita.</li>
+          <li>Ganho para o local: cliente que fica 30 a 45 minutos comprando, imagem sustentável, zero trabalho.</li>
+          <li>Contrato de 8 a 10 anos, renovação automática, exclusividade de recarga paga e multa se o local rescindir antes do payback.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <span class="eyebrow">Regras do setor</span>
+        <h3>Atividade livre, com projeto e licenças em dia</h3>
+        <ul class="clean small">
+          <li>ANEEL, REN 1.000/2021 (a partir do art. 550): qualquer empresa pode explorar recarga, e o preço é livre.</li>
+          <li>Projeto elétrico com ART de engenheiro (CREA-MG), pedido de aumento de carga à Cemig e normas ABNT NBR 17019, NBR 5410 e IEC 61851.</li>
+          <li>Corpo de Bombeiros de MG fez consulta pública sobre recarga em garagens (SAVE). Em local aberto o risco é menor; em garagem fechada, verificar a regra vigente.</li>
+          <li>Tributação da recarga ainda gera dúvida (ICMS × ISS): definir CNAE e regime com contador antes de abrir a empresa.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tablebox">
+      <table>
+        <thead><tr><th>Risco</th><th>Nível</th><th>Como mitigar</th></tr></thead>
+        <tbody>
+          <tr><td>Ocupação abaixo do esperado nos primeiros meses</td><td><span class="pill bad">Alto</span></td><td>Escolher ponto com fluxo de app; parceria com frotas; preço de fidelidade; cadastro em PlugShare, Electromaps e grupos de motoristas</td></tr>
+          <tr><td>Custo de energia alto (tarifa comercial)</td><td><span class="pill bad">Alto</span></td><td>Energia via local em média tensão; cláusula de preço máximo do kWh; geração solar compartilhada, que Minas tem em abundância</td></tr>
+          <tr><td>Concorrente grande instala DC ao lado</td><td><span class="pill warn">Médio</span></td><td>Exclusividade no imóvel; velocidade de execução; relacionamento com motoristas</td></tr>
+          <tr><td>Recarga gratuita da Cemig ou de montadoras na região</td><td><span class="pill warn">Médio</span></td><td>A chamada da Cemig foca turismo e rodovias; ficar fora desses eixos no primeiro ponto</td></tr>
+          <tr><td>Carregador parado por defeito</td><td><span class="pill warn">Médio</span></td><td>Fabricante com assistência em MG, contrato de manutenção com prazo de atendimento, monitoramento remoto, meta de disponibilidade acima de 97%</td></tr>
+          <tr><td>Vandalismo, furto de cabo</td><td><span class="pill info">Baixo</span></td><td>Local com vigilância e câmeras; seguro do equipamento</td></tr>
+          <tr><td>Mudança tributária ou regulatória</td><td><span class="pill info">Baixo</span></td><td>Acompanhar com contador; preço livre permite repassar custo</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- PLANO -->
+<section class="sec pb" id="plano">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow"><b>9</b> · Plano de ação</span><h2>Do primeiro ponto à rede</h2></div>
+    <div class="steps">
+      <div class="step"><span class="when">Dias 1–30</span><h3>Validar</h3><ul><li>Abrir conversas com os 5 primeiros locais</li><li>Contar carros elétricos no estacionamento em 3 horários</li><li>Checar no PlugShare e no local se há recarga nova</li><li>Pedir 3 cotações de carregador e 2 de plataforma</li></ul></div>
+      <div class="step"><span class="when">Dias 30–90</span><h3>Contratar</h3><ul><li>Assinar contrato com o local (energia ≤ R$ 0,90)</li><li>Abrir a empresa e definir tributação</li><li>Projeto elétrico, ART e pedido à Cemig</li><li>Fechar parceria com uma frota ou cooperativa</li></ul></div>
+      <div class="step"><span class="when">Meses 4–6</span><h3>Inaugurar</h3><ul><li>Instalação (4 a 8 semanas após aprovação)</li><li>Preço de lançamento por 30 dias</li><li>Divulgar em grupos de motoristas de app</li><li>Medir kWh/dia, ocupação e disponibilidade</li></ul></div>
+      <div class="step"><span class="when">Meses 9–36</span><h3>Expandir</h3><ul><li>Gatilho: média acima de 200 kWh/dia por 3 meses</li><li>Pontos 2 e 3 na mesma rede de supermercado ou shopping</li><li>Meta de 5 a 8 pontos em 36 meses</li><li>Depois: hub com 4 DC e solar, ou rodovia</li></ul></div>
+    </div>
+    <div class="cols">
+      <div class="panel">
+        <span class="eyebrow">Indicadores para a decisão de expandir</span>
+        <ul class="clean small">
+          <li>kWh vendidos por dia por carregador (meta: 200 no 6º mês)</li>
+          <li>Recargas por dia e % de clientes que voltam</li>
+          <li>Margem líquida por kWh (meta: acima de R$ 0,65)</li>
+          <li>Disponibilidade do equipamento (meta: acima de 97%)</li>
+          <li>Nota no PlugShare (meta: acima de 9)</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <span class="eyebrow">Estrutura entre os três sócios</span>
+        <ul class="clean small">
+          <li>Capital do 1º ponto: cerca de R$ 53 mil por sócio (R$ 160 mil ÷ 3), mais reserva de R$ 10 mil por sócio.</li>
+          <li>Dividir papéis: comercial (locais e frotas), operação (fornecedores e manutenção) e financeiro (contratos e indicadores).</li>
+          <li>Acordo de sócios antes do 1º contrato: aportes futuros, saída e preferência de compra.</li>
+          <li>Financiamento: verificar linhas de equipamento (BNDES via bancos, BDMG) para carregadores nacionais como WEG e Intelbras.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FONTES -->
+<section class="sec pb" id="fontes">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow"><b>10</b> · Fontes e limitações</span><h2>De onde vêm os números</h2></div>
+    <p class="read small">Este estudo usa dados públicos coletados em novembro de 2026. Preços de equipamento são de revendas online, e o modelo financeiro usa premissas deste estudo, marcadas como tal. Antes de investir, confirmar no local: presença atual de carregadores (PlugShare), tarifa de energia que o local pagaria e cotações formais. Nenhum local listado foi consultado sobre interesse.</p>
+    <ul class="sources">{{SOURCES}}</ul>
+    <div class="eyebrow" style="margin-top:10px">Créditos das fotos (Wikimedia Commons)</div>
+    <ul class="sources small">{{CREDITS}}</ul>
+  </div>
+</section>
+<footer><div class="wrap">Estudo de mercado preparado para avaliação entre sócios · Belo Horizonte, novembro de 2026. Não é recomendação de investimento; decisões finais devem considerar cotações formais e assessoria contábil e jurídica.</div></footer>
+<div id="tip" hidden></div>
+
+<script>
+(function(){
+  var tip=document.getElementById('tip');
+  function show(t,x,y){tip.textContent=t;tip.hidden=false;var w=tip.offsetWidth,h=tip.offsetHeight;var nx=x+14,ny=y-h-10;if(nx+w>window.innerWidth-8)nx=x-w-14;if(ny<8)ny=y+16;tip.style.left=nx+'px';tip.style.top=ny+'px';}
+  document.querySelectorAll('[data-tip]').forEach(function(el){
+    el.addEventListener('mousemove',function(e){show(el.getAttribute('data-tip'),e.clientX,e.clientY);});
+    el.addEventListener('mouseleave',function(){tip.hidden=true;});
+  });
+  // crosshair do gráfico de caixa
+  var cash=document.getElementById('cashchart');
+  if(cash){
+    var data=JSON.parse(cash.getAttribute('data-series'));var cfg=JSON.parse(cash.getAttribute('data-cfg'));
+    var line=cash.querySelector('.xh'); var dots=cash.querySelectorAll('.xh-dot');
+    var hit=cash.querySelector('.hit');
+    function fmt(v){return (v<0?'−':'')+'R$ '+Math.abs(Math.round(v)).toLocaleString('pt-BR');}
+    hit.addEventListener('mousemove',function(e){
+      var pt=cash.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;var p=pt.matrixTransform(cash.getScreenCTM().inverse());
+      var m=Math.max(0,Math.min(60,Math.round((p.x-cfg.x0)/cfg.dx)));var x=cfg.x0+m*cfg.dx;
+      line.setAttribute('x1',x);line.setAttribute('x2',x);line.style.display='';
+      var t='Mês '+m;['Conservador','Base','Otimista'].forEach(function(k,i){var v=data[k][m];dots[i].setAttribute('cx',x);dots[i].setAttribute('cy',cfg.y0-(v-cfg.min)*cfg.ky);dots[i].style.display='';t+=' · '+k+': '+fmt(v);});
+      show(t,e.clientX,e.clientY);
+    });
+    hit.addEventListener('mouseleave',function(){tip.hidden=true;line.style.display='none';dots.forEach(function(d){d.style.display='none';});});
+  }
+  // simulador
+  var $=function(id){return document.getElementById(id)};
+  function brl(v,d){return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:d||0,maximumFractionDigits:d||0});}
+  function upd(){
+    var P=+$('sim-price').value,E=+$('sim-energy').value,S=+$('sim-sessions').value,C=+$('sim-capex').value*1000,D=+$('sim-ded').value/100,F=+$('sim-fix').value;
+    $('o-price').textContent=brl(P,2);$('o-energy').textContent=brl(E,2);$('o-sessions').textContent=S;$('o-capex').textContent=brl(C/1000)+' mil';$('o-ded').textContent=Math.round(D*100)+'%';$('o-fix').textContent=brl(F);
+    var kwh=S*25*30,mg=P*(1-D)-E,ac=400*(1.49*(1-D)-E);var res=kwh*mg+ac-F;
+    $('r-kwh').textContent=kwh.toLocaleString('pt-BR');$('r-rev').textContent=brl(kwh*P+400*1.49);$('r-mg').textContent=brl(mg,2);$('r-res').textContent=brl(res);
+    $('r-pb').textContent=res>0?Math.ceil(C/res)+' meses':'não paga';
+    var be=mg>0?Math.max(0,(F-ac)/(mg*25*30)):Infinity;$('r-be').textContent=isFinite(be)?be.toLocaleString('pt-BR',{maximumFractionDigits:1}):'—';
+    var pb=res>0?C/res:Infinity;var v=$('sim-verdict');
+    if(pb<=36){v.innerHTML='<span class="pill good">Atrativo</span> Retorno em até 3 anos.';}
+    else if(pb<=60){v.innerHTML='<span class="pill warn">Marginal</span> Retorno entre 3 e 5 anos: só vale com melhora de ocupação, energia ou capex.';}
+    else{v.innerHTML='<span class="pill bad">Inviável</span> Retorno acima de 5 anos ou prejuízo mensal.';}
+  }
+  ['sim-price','sim-energy','sim-sessions','sim-capex','sim-ded','sim-fix'].forEach(function(id){$(id).addEventListener('input',upd);});
+  upd();
+})();
+</script>
