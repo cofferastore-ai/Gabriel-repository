@@ -35,13 +35,13 @@ SCEN = {"Conservador": (3000, 0.10), "Base": (6000, 0.20), "Otimista": (9000, 0.
 MRATE = 1.15 ** (1 / 12) - 1
 
 
-def run(S, g, price=P, energy=E, capex=CAPEX, months=60):
+def run(S, g, price=P, energy=E, capex=CAPEX, months=60, ded=DED, fix=FIX):
     cum, npv, pb = -capex, -capex, None
     cums, res_list, vols = [cum], [], []
     for m in range(1, months + 1):
         v = S * min(1, 0.35 + 0.65 * (m - 1) / 11) if m <= 12 else S * (1 + g) ** ((m - 12) / 12)
         v = min(v, CAP)
-        res = v * (price * (1 - DED) - energy) + AC_KWH * (AC_P * (1 - DED) - energy) - FIX
+        res = v * (price * (1 - ded) - energy) + AC_KWH * (AC_P * (1 - ded) - energy) - fix
         cum += res
         npv += res / (1 + MRATE) ** m
         if pb is None and cum >= 0:
@@ -52,6 +52,12 @@ def run(S, g, price=P, energy=E, capex=CAPEX, months=60):
 
 R = {k: run(*v) for k, v in SCEN.items()}
 lever = run(6000, 0.20, capex=125000)
+OWN_DED, OWN_FIX = DED - 0.10 + 0.01, FIX + 500     # plataforma própria: troca 10% por Pix ~1% e soma R$ 500 fixos
+own = run(6000, 0.20, ded=OWN_DED, fix=OWN_FIX)
+def steady(ded, fix, kwh=6000):
+    return kwh * (P * (1 - ded) - E) + AC_KWH * (AC_P * (1 - ded) - E) - fix
+base_res, own_res = steady(DED, FIX), steady(OWN_DED, OWN_FIX)
+third_fee = 0.10 * (6000 * P + AC_KWH * AC_P)
 margin = P * (1 - DED) - E
 ac_res = AC_KWH * (AC_P * (1 - DED) - E)
 be_day = (FIX - ac_res) / (margin * 25 * 30)
@@ -401,6 +407,19 @@ SOURCES = [
     ("Ficha técnica BYD Dolphin Mini 2026", "https://www.byd.com/material/__CN/byd-site/br/fichas-tecnicas-2026/update-02-07-2026/BYD_DolphinMini_FichaTecnica_2026.pdf"),
     ("Verdemar inaugura maior loja no Belvedere (Diário do Comércio)", "https://diariodocomercio.com.br/negocios/belvedere-recebe-maior-loja-rede-verdemar-belo-horizonte/"),
     ("Bombeiros e regras para recarga em prédios (Canal VE)", "https://canalve.com.br/bombeiros-regras-estacoes-recarga-predios/"),
+    ("Now Charge: carregador DC 60 kW e contato em BH", "https://nowcharge.com.br/carregador-d-c-60-kw/"),
+    ("FiveStars: projeto e venda de carregadores em BH", "https://www.fivestars.eng.br/projeto-eletroposto-belo-horizonte"),
+    ("Nansen terá linha de montagem de carregadores em Betim (Diário do Comércio)", "https://diariodocomercio.com.br/?p=611266"),
+    ("Nansen e PVMOB: R$ 1 bilhão em eletropostos (Diário do Comércio)", "https://diariodocomercio.com.br/negocios/eletropostos-investimento-pv-mob-nansen-brasil/"),
+    ("Watton planeja 100 eletropostos em Minas até 2027 (Boca)", "https://boca.com.br/negocios/watton-planeja-100-eletropostos-em-minas-ate-2027"),
+    ("Fury Charger DC 60 kW", "https://www.furycharger.com.br/carregador-veicular-rapido-dc-60kw-fury-charger"),
+    ("GTMax Energy DC duplo 60 kW", "https://www.gtmaxenergy.com.br/carregador-ev-dc-duplo-60kw-estacao-de-carga-rapida-gtmax-energy"),
+    ("GreenV Turbo Slim DC 60 kW", "https://loja.greenv.com.br/carregador-turbo-slim-dc-60-kw"),
+    ("NeoCharge NDC60", "https://www.neocharge.com.br/loja/carregador-carro-eletrico-dc-ndc60-60kw.html"),
+    ("CitrineOS: servidor OCPP de código aberto (LF Energy)", "https://lfenergy.org/projects/citrineos/"),
+    ("CitrineOS no GitHub (Apache 2.0)", "https://github.com/citrineos/citrineos-core"),
+    ("SteVe: servidor OCPP 1.6 de código aberto (GPL-3)", "https://github.com/steve-community/steve"),
+    ("Taxas de Pix para empresas em 2026 (Nuvemshop)", "https://www.nuvemshop.com.br/blog/pix-pessoa-juridica/"),
 ]
 
 
@@ -424,6 +443,8 @@ def build():
         "BH_CHG_GAP": fmt(bh_sales_share / bh_chg_share, 1),
         "CAPEX_K": fmt(CAPEX / 1000), "PB_BASE": str(R["Base"]["pb"]), "PB_OPT": str(R["Otimista"]["pb"]),
         "PB_LEVER": str(lever["pb"]),
+        "OWN_PB": str(own["pb"]), "OWN_GAIN": brl(own_res - base_res), "OWN_RES": brl(own_res), "BASE_RES": brl(base_res),
+        "THIRD_FEE": "≈ " + brl(round(third_fee, -1)), "THIRD_FEE5": brl(round(third_fee * 5, -2)),
         "CHART_SALES": chart_sales(), "CHART_GAP": chart_gap(), "CHART_SCORES": chart_scores(), "CHART_CASH": chart_cash(),
         "MAP": map_svg(), "MAP_LIST": map_list(), "PLACES": places_html(),
         "CAPEX_ROWS": capex_rows(), "SCEN_ROWS": scen_rows(), "SENS_ROWS": sens_rows(),
@@ -446,6 +467,7 @@ def build():
             + t[:head_end] + "\n</head>\n<body>\n" + t[head_end:] + "\n</body>\n</html>\n")
     with open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8") as f:
         f.write(full)
+    print("own", own["pb"], round(own_res), round(base_res), round(third_fee))
     print("capex", CAPEX, "margin", round(margin, 3), "be/day", round(be_day, 2), "lever pb", lever["pb"])
     for k, r in R.items():
         print(k, "pb", r["pb"], "npv", round(r["npv"]))
